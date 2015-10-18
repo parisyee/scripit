@@ -1,3 +1,5 @@
 Rails.application.routes.draw do
-  root "welcome#index"
+  root "documents#index"
+
+  resources :documents, only: [:index, :create]
 end

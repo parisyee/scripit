@@ -1,0 +1,21 @@
+<h1>Documents</h1>
+<div>
+  <h2>New Document</h1>
+  <%= simple_form_for new_document do |f| %>
+    <%= f.input :title %>
+    <%= f.input :content %>
+    <%= f.submit "Create" %>
+  <% end %>
+</div>
+<div>
+  <ul>
+    <% documents.each do |document| %>
+      <li>
+        <div>
+          <span><%= document.title %></span>
+          <p><%= document.content %></p>
+        </div>
+      </li>
+    <% end %>
+  </ul>
+</div>
