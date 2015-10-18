@@ -1,0 +1,8 @@
+# enable_defaults! { ENV['RACK_ENV'] != 'production' }
+
+group :production do
+  variable :BASIC_AUTH_USER, :string
+  variable :BASIC_AUTH_PASSWORD, :string
+end
+
+# variable :REDIS_URL, :string, default: 'redis://localhost:6379'
