@@ -1,5 +1,6 @@
 deployment:
   production:
     branch: master
-    heroku:
-      appname: script-it
+    commands:
+      - git push git@heroku.com:script-it.git $CIRCLE_SHA1:master
+      - heroku run rake db:migrate --app script-it
