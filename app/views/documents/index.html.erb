@@ -1,19 +1,19 @@
 <h1>Documents</h1>
 <div>
   <h2>New Document</h1>
-  <%= simple_form_for new_document do |f| %>
+  <%= simple_form_for document do |f| %>
     <%= f.input :title %>
     <%= f.input :content %>
-    <%= f.submit "Create" %>
+    <%= f.submit "Save" %>
   <% end %>
 </div>
 <div>
   <ul>
-    <% documents.each do |document| %>
+    <% documents.each do |doc| %>
       <li>
         <div>
-          <span><%= document.title %></span>
-          <p><%= document.content %></p>
+          <span><%= link_to doc.title, document_path(doc) %></span>
+          <p><%= doc.content %></p>
         </div>
       </li>
     <% end %>

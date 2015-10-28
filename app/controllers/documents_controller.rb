@@ -1,15 +1,29 @@
 class DocumentsController < ApplicationController
   def index
     documents = Document.all
-    new_document = Document.new
+    document = Document.new
 
-    render locals: { documents: documents, new_document: new_document }
+    render locals: { documents: documents, document: document }
   end
 
   def create
-    Document.create!(document_params)
+    document = Document.create!(document_params)
 
-    redirect_to documents_path
+    redirect_to documents_path(document)
+  end
+
+  def show
+    document = Document.find(params[:id])
+    documents = Document.all
+
+    render :index, locals: { documents: documents, document: document }
+  end
+
+  def update
+    document = Document.find(params[:id])
+    document.update!(document_params)
+
+    redirect_to document_path(document)
   end
 
   private
