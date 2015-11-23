@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
-  root "documents#index"
+  root "workspace#show"
 
-  resources :documents, only: [:index, :create, :show, :update]
+  namespace :api do
+    namespace :v1 do
+      resources :documents, only: [:create, :update]
+    end
+  end
+  resource :workspace, only: [:show]
 end

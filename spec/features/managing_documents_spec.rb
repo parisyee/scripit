@@ -1,25 +1,38 @@
 require "rails_helper"
 
-RSpec.describe "User manages documents", type: :feature do
-  scenario do
+RSpec.describe "User manages documents", :js, type: :feature do
+  scenario "creating a document" do
+    visit_workspace
+
+    fill_in "document[title]", with: "The Old Apartment"
+    fill_in "document[content]", with: "INT. APARTMENT - DAY"
+    wait_for_autosave
+
+    reload_page
+    click_link "The Old Apartment"
+
+    expect(page).to have_field "document[title]", with: "The Old Apartment"
+    expect(page).to have_field "document[content]", with: "INT. APARTMENT - DAY"
+  end
+
+  def visit_workspace
     visit "/"
+    wait_for_react_components
+  end
 
-    expect(page).to have_content "New Document"
+  def reload_page
+    visit page.current_path
+    wait_for_react_components
+  end
 
-    fill_in "Title", with: "Awesome Document"
-    fill_in "Content", with: "INT. APARTMENT - DAY"
-    click_button "Save"
-
-    within "li", text: "Awesome Document" do
-      expect(page).to have_content "INT. APARTMENT - DAY"
+  def wait_for_react_components
+    Timeout::timeout(20) do
+      loop until react_components_loaded?
     end
+  end
 
-    click_link "Awesome Document"
-    fill_in "Content", with: "EXT. PARKINK LOT - NIGHT"
-    click_button "Save"
-
-    within "li", text: "Awesome Document" do
-      expect(page).to have_content "EXT. PARKINK LOT - NIGHT"
-    end
+  def react_components_loaded?
+    page.evaluate_script("typeof React === 'object'") &&
+      page.find(".workspace")
   end
 end
