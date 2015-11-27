@@ -2,12 +2,22 @@ var Workspace = React.createClass({
   getInitialState: function() {
     return {
       documents: this.props.documents_data,
-      currentDocument: {}
+      currentDocument: {
+        id: null,
+        elements: [{type: "heading", text: "INT. MILENIUM FRUIT & GROCERY - NIGHT"}],
+        title: ""
+      }
     };
   },
 
   handleDocumentSelect: function(document) {
-    this.setState({ currentDocument: document });
+    this.setState({
+      currentDocument: {
+        id: document.id,
+        title: document.title,
+        elements: JSON.parse(document.content)
+      }
+    });
   },
 
   render: function() {
@@ -16,9 +26,9 @@ var Workspace = React.createClass({
         <DocumentList
           onDocumentSelect={this.handleDocumentSelect}
           documents={this.state.documents} />
-        <DocumentEditor
+        <ScriptEditor
           documentID={this.state.currentDocument.id}
-          content={this.state.currentDocument.content}
+          elements={this.state.currentDocument.elements}
           title={this.state.currentDocument.title}
           url="/api/v1/documents" />
       </div>

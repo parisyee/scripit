@@ -2,9 +2,10 @@ var DocumentList = React.createClass({
   render: function() {
     var onDocumentSelect = this.props.onDocumentSelect;
 
-    listItemNodes = this.props.documents.map(function(document){
+    listItemNodes = this.props.documents.map(function(document, i){
       return (
         <DocumentListItem
+          key={i}
           onDocumentSelect={onDocumentSelect}
           document={document} />
       );

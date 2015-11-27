@@ -1,10 +1,17 @@
-var DocumentEditor = React.createClass({
+var ScriptEditor = React.createClass({
   AUTOSAVE_TIMER: null,
+
+  NEW_ELEMENT_SEQUENCE_MAP: {
+    "heading": "action",
+    "action": "character",
+    "character": "dialogue",
+    "dialogue": "heading"
+  },
 
   getInitialState: function() {
     return {
       documentID: this.props.documentID,
-      content: this.props.content,
+      elements: this.props.elements,
       title: this.props.title
     };
   },
@@ -12,7 +19,7 @@ var DocumentEditor = React.createClass({
   shouldComponentUpdate: function(nextProps, nextState) {
     if (nextProps.documentID !== this.props.documentID) {
       this.setState({
-        content: nextProps.content,
+        elements: nextProps.elements,
         title: nextProps.title
       });
     }
@@ -41,7 +48,7 @@ var DocumentEditor = React.createClass({
       data: {
         document: {
           title: this.state.title,
-          content: this.state.content
+          content: JSON.stringify(this.state.elements)
         }
       },
       dataType: "json",
@@ -59,14 +66,7 @@ var DocumentEditor = React.createClass({
     });
   },
 
-  handleChange: function(e) {
-    e.preventDefault();
-
-    this.setState({
-      content: this.refs.content.value,
-      title: this.refs.title.value
-    });
-
+  queueAutosave: function() {
     if (this.AUTOSAVE_TIMER) {
       clearTimeout(this.AUTOSAVE_TIMER);
     }
@@ -77,6 +77,47 @@ var DocumentEditor = React.createClass({
       this.saveDocument();
       this.AUTOSAVE_TIMER = null;
     }.bind(this), 2000);
+  },
+
+  insertNewElement: function(index) {
+    var nextIndex = index + 1;
+    var nextType = this.NEW_ELEMENT_SEQUENCE_MAP[this.state.elements[index].type];
+    var nextElement = { type: nextType, text: "" };
+    var nextID = nextType + "-" + nextIndex;
+
+    this.setState(function(oldState) {
+      var elements = oldState.elements.concat([]);
+      elements.splice(nextIndex, 0, nextElement)
+
+      return { elements: elements };
+    }, function() {
+      $("#" + nextID).focus();
+    });
+  },
+
+  handleElementChange: function(index, type, text) {
+    this.setState(function(oldState) {
+      var elements = oldState.elements;
+      elements.splice(index, 1, { type: type, text: text });
+
+      return { elements: elements };
+    }, this.queueAutosave);
+  },
+
+  elementNodes: function() {
+    var nodes = this.state.elements.map(function(element, i) {
+      return (
+        <ScriptElement
+          key={i}
+          index={i}
+          type={element.type}
+          text={element.text}
+          onElementChange={this.handleElementChange}
+          onReturnKeydown={this.insertNewElement} />
+      );
+    }.bind(this));
+
+    return nodes;
   },
 
   render: function() {
@@ -93,15 +134,8 @@ var DocumentEditor = React.createClass({
               onChange={this.handleChange}
               ref="title" />
           </div>
-          <div className="uk-form-row">
-            <textarea
-              className="uk-width-1-1"
-              name="document[content]"
-              value={this.state.content}
-              onChange={this.handleChange}
-              ref="content"></textarea>
-          </div>
         </form>
+        {this.elementNodes()}
       </div>
     );
   }
