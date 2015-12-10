@@ -4,7 +4,18 @@ var Workspace = React.createClass({
       documents: this.props.documents_data,
       currentDocument: {
         id: null,
-        elements: [{type: "heading", text: "INT. MILENIUM FRUIT & GROCERY - NIGHT"}],
+        sections: [
+          {
+            title: "",
+            notes: "",
+            elements: [
+              {
+                type: "heading",
+                text: "INT. MILENIUM FRUIT & GROCERY - NIGHT"
+              }
+            ],
+          }
+        ],
         title: ""
       }
     };
@@ -15,9 +26,13 @@ var Workspace = React.createClass({
       currentDocument: {
         id: document.id,
         title: document.title,
-        elements: JSON.parse(document.content)
+        sections: JSON.parse(document.content)
       }
     });
+  },
+
+  uniqueId: function() {
+    return "document-editor-" + new Date();
   },
 
   render: function() {
@@ -27,9 +42,8 @@ var Workspace = React.createClass({
           onDocumentSelect={this.handleDocumentSelect}
           documents={this.state.documents} />
         <ScriptEditor
-          documentID={this.state.currentDocument.id}
-          elements={this.state.currentDocument.elements}
-          title={this.state.currentDocument.title}
+          key={this.uniqueId()}
+          document={this.state.currentDocument}
           url="/api/v1/documents" />
       </div>
     );

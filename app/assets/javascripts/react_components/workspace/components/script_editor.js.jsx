@@ -1,63 +1,52 @@
 var ScriptEditor = React.createClass({
   AUTOSAVE_TIMER: null,
 
-  NEW_ELEMENT_SEQUENCE_MAP: {
-    "heading": "action",
-    "action": "character",
-    "character": "dialogue",
-    "dialogue": "heading"
-  },
-
   getInitialState: function() {
-    return {
-      documentID: this.props.documentID,
-      elements: this.props.elements,
-      title: this.props.title
-    };
+    return { document: this.props.document };
   },
 
-  shouldComponentUpdate: function(nextProps, nextState) {
-    if (nextProps.documentID !== this.props.documentID) {
-      this.setState({
-        elements: nextProps.elements,
-        title: nextProps.title
-      });
-    }
+  // shouldComponentUpdate: function(nextProps, nextState) {
+  //   if (nextProps.document.id !== this.state.document.id) {
+  //     this.setState({ document: nextProps.document });
+  //     this.forceUpdate();
+  //   }
 
-    return true;
-  },
+  //   return true;
+  // },
 
   url: function() {
     var id;
-    if (this.props.documentID) {
-      id = "/" + this.props.documentID;
+    if (this.state.document.id) {
+      id = "/" + this.state.document.id;
     } else {
       id = "";
     }
     return this.props.url + id;
   },
 
-  method: function() {
-    return this.props.documentID ? "PUT" : "POST";
+  requestMethod: function() {
+    return this.state.document.id ? "PUT" : "POST";
+  },
+
+  buildDocument: function() {
+    return {
+      title: this.state.document.title,
+      content: JSON.stringify(this.state.document.sections)
+    };
   },
 
   saveDocument: function() {
     $.ajax({
       url: this.url(),
-      method: this.method(),
-      data: {
-        document: {
-          title: this.state.title,
-          content: JSON.stringify(this.state.elements)
-        }
-      },
+      method: this.requestMethod(),
+      data: { document: this.buildDocument() },
       dataType: "json",
       success: function(data) {
-        document.getElementById("autosave-indicator").innerHTML = "Changes Saved";
-        if (!this.props.documentID) {
-          this.setState({
-            documentID: data.id
-          });
+        $("#autosave-indicator").html("Changes Saved");
+        if (!this.props.document.id) {
+          var document = this.state.document;
+          document.id = data.id;
+          this.setState({ document: document });
         }
       }.bind(this),
       error: function(xhr, status, err) {
@@ -71,7 +60,7 @@ var ScriptEditor = React.createClass({
       clearTimeout(this.AUTOSAVE_TIMER);
     }
 
-    document.getElementById("autosave-indicator").innerHTML = "Saving Changes...";
+    $("#autosave-indicator").html("Saving Changes...");
 
     this.AUTOSAVE_TIMER = setTimeout(function() {
       this.saveDocument();
@@ -79,45 +68,29 @@ var ScriptEditor = React.createClass({
     }.bind(this), 2000);
   },
 
-  insertNewElement: function(index) {
-    var nextIndex = index + 1;
-    var nextType = this.NEW_ELEMENT_SEQUENCE_MAP[this.state.elements[index].type];
-    var nextElement = { type: nextType, text: "" };
-    var nextID = nextType + "-" + nextIndex;
-
-    this.setState(function(oldState) {
-      var elements = oldState.elements.concat([]);
-      elements.splice(nextIndex, 0, nextElement)
-
-      return { elements: elements };
-    }, function() {
-      $("#" + nextID).focus();
-    });
+  handleDocumentDetailsChange: function() {
+    var document = this.state.document;
+    document.title = this.refs.title.value;
+    this.setState({ document: document }, this.queueAutosave);
   },
 
-  handleElementChange: function(index, type, text) {
+  handleSectionChange: function(index, section) {
     this.setState(function(oldState) {
-      var elements = oldState.elements;
-      elements.splice(index, 1, { type: type, text: text });
+      var document = oldState.document;
+      document.sections.splice(index, 1, section);
 
-      return { elements: elements };
+      return { document: document };
     }, this.queueAutosave);
   },
 
-  elementNodes: function() {
-    var nodes = this.state.elements.map(function(element, i) {
-      return (
-        <ScriptElement
-          key={i}
-          index={i}
-          type={element.type}
-          text={element.text}
-          onElementChange={this.handleElementChange}
-          onReturnKeydown={this.insertNewElement} />
-      );
-    }.bind(this));
-
-    return nodes;
+  sectionList: function() {
+    console.log("EDITOR - state.document.sections: %o", this.state.document.sections);
+    return (
+      <SectionList
+        documentId={this.state.document.id}
+        sections={this.state.document.sections}
+        onSectionChange={this.handleSectionChange} />
+    );
   },
 
   render: function() {
@@ -130,12 +103,12 @@ var ScriptEditor = React.createClass({
               className="uk-width-1-1"
               type="text"
               name="document[title]"
-              value={this.state.title}
-              onChange={this.handleChange}
+              value={this.state.document.title}
+              onChange={this.handleDocumentDetailsChange}
               ref="title" />
           </div>
         </form>
-        {this.elementNodes()}
+        {this.sectionList()}
       </div>
     );
   }

@@ -14,14 +14,11 @@ var ScriptElement = React.createClass({
   },
 
   getInitialState: function() {
-    return {
-      type: this.props.type,
-      text: this.props.text
-    };
+    return { element: this.props.element }
   },
 
   handleReturnKeydown: function() {
-    if(this.state.text === "") {
+    if(this.state.element.text === "") {
       this.setState(function(oldState) {
         return {
           type: this.NEXT_ELEMENT_SEQUENCE_MAP[oldState.type]
@@ -45,16 +42,16 @@ var ScriptElement = React.createClass({
   },
 
   classNames: function() {
-    return "script-element uk-width-1-1 " + this.state.type;
+    return "script-element uk-width-1-1" + this.state.element.type;
   },
 
   elementStyles: function() {
     var styles = {
-      background: this.TYPE_COLOR_MAP[this.state.type],
+      background: this.TYPE_COLOR_MAP[this.state.element.type],
       minHeight: "25px"
     };
 
-    if (this.state.type === "heading" || this.state.type === "character") {
+    if (this.state.element.type === "heading" || this.state.element.type === "character") {
       styles.textTransform = "uppercase";
     }
 
@@ -62,7 +59,7 @@ var ScriptElement = React.createClass({
   },
 
   elementID: function() {
-    return this.state.type + "-" + this.props.index;
+    return this.state.element.type + "-" + this.props.index;
   },
 
   placeCaretAtEnd: function(el) {
@@ -84,7 +81,12 @@ var ScriptElement = React.createClass({
   },
 
   handleChange: function() {
-    this.props.onElementChange(this.props.index, this.state.type, this.state.text);
+    var element = {
+      type: this.state.element.type,
+      text: this.state.element.text
+    };
+
+    this.props.onElementChange(this.props.index, element);
   },
 
   handleInput: function() {
@@ -106,7 +108,7 @@ var ScriptElement = React.createClass({
         onInput={this.handleInput}
         ref="element"
         contentEditable="true">
-        {this.state.text}
+        {this.state.element.text}
       </div>
     );
   }
