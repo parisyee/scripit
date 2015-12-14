@@ -1,12 +1,6 @@
 module Api
   module V1
     class DocumentsController < ApplicationController
-      # def index
-      #   documents = Document.all.order(updated_at: :desc)
-
-      #   render documets JSON.generate
-      # end
-
       def create
         document = Document.create!(document_params)
 

@@ -1,9 +1,17 @@
 var ScriptElement = React.createClass({
-  TYPE_COLOR_MAP: {
-    "heading": "pink",
-    "action": "lightgreen",
-    "character": "lightblue",
-    "dialogue": "yellow"
+  ELEMENT_TYPES: {
+    action: "action",
+    character: "character",
+    dialogue: "dialogue",
+    heading: "heading",
+    parenthetical: "parenthetical",
+    transition: "transition"
+  },
+
+  KEYCODES: {
+    backspace: 8,
+    carriageRetrun: 13,
+    tab: 9,
   },
 
   NEXT_ELEMENT_SEQUENCE_MAP: {
@@ -13,45 +21,117 @@ var ScriptElement = React.createClass({
     "dialogue": "character"
   },
 
+  TYPE_COLOR_MAP: {
+    "action": "lightgreen",
+    "character": "lightblue",
+    "dialogue": "yellow",
+    "heading": "pink",
+    "parenthetical": "lightpurple",
+    "transition": "orange"
+  },
+
+  propTypes: {
+    element: React.PropTypes.object.isRequired,
+    index: React.PropTypes.number.isRequired,
+    onElementCreated: React.PropTypes.func.isRequired,
+    onElementRemoved: React.PropTypes.func.isRequired
+  },
+
   getInitialState: function() {
     return { element: this.props.element }
   },
 
-  handleReturnKeydown: function() {
+  handleBackspaceKeydown: function(event) {
     if(this.state.element.text === "") {
-      this.setState(function(oldState) {
-        return {
-          type: this.NEXT_ELEMENT_SEQUENCE_MAP[oldState.type]
-        };
-      }, this.handleChange);
-    } else {
-      this.props.onReturnKeydown(this.props.index);
+      event.preventDefault();
+      this.props.onElementRemoved(this.props.index)
     }
   },
 
+  handleReturnKeydown: function() {
+    if (this.state.element.text === "") {
+      this.setState(function(oldState) {
+        var element = oldState.element;
+        element.type = this.NEXT_ELEMENT_SEQUENCE_MAP[element.type];
+
+        return { element: element };
+      }, this.handleChange);
+    } else {
+      this.props.onElementCreated(this.props.index);
+    }
+  },
+
+  handleTabKeydown: function(event) {
+    this.setState(function(oldState) {
+      var newType;
+      var element = oldState.element;
+
+      if (event.shiftKey) {
+        newType = this.ELEMENT_TYPES.transition;
+      } else {
+        newType = this.nextElementType(element.type);
+      }
+      element.type = newType;
+
+      return { element: element };
+    }, this.handleChange);
+  },
+
+  nextElementType: function(type) {
+    return this.NEXT_ELEMENT_SEQUENCE_MAP[type];
+  },
+
   componentDidMount: function() {
+    var BACKSPACE_KEYCODE = this.KEYCODES.backspace;
+    var CARRIAGE_RETRUN_KEYCODE = this.KEYCODES.carriageRetrun;
+    var TAB_KEYCODE = this.KEYCODES.tab;
+    var handleBackspaceKeydown = this.handleBackspaceKeydown;
     var handleReturnKeydown = this.handleReturnKeydown;
+    var handleTabKeydown = this.handleTabKeydown;
     var node = ReactDOM.findDOMNode(this);
 
     $(node).keydown(function(event) {
-      if (event.keyCode === 13) {
+      if (event.keyCode === BACKSPACE_KEYCODE) {
+        handleBackspaceKeydown(event);
+      }
+      if (event.keyCode === CARRIAGE_RETRUN_KEYCODE) {
         event.preventDefault();
         handleReturnKeydown();
+      }
+      if (event.keyCode === TAB_KEYCODE) {
+        event.preventDefault();
+        handleTabKeydown(event);
       }
     });
   },
 
   classNames: function() {
-    return "script-element uk-width-1-1" + this.state.element.type;
+    var classes = "script-element " + this.state.element.type;
+
+    if (this.state.element.type === "character") {
+      classes += " uk-width-medium-1-3 uk-push-1-3";
+    } else if (this.state.element.type === "dialogue") {
+      classes += " uk-width-medium-3-5 uk-push-1-5";
+    } else {
+      classes += " uk-width-1-1";
+    }
+
+    return classes;
   },
 
   elementStyles: function() {
     var styles = {
       background: this.TYPE_COLOR_MAP[this.state.element.type],
-      minHeight: "25px"
+      minHeight: "25px",
+      outline: "none",
+      "font-family": "'Courier New', Courier, monospace",
+      "font-weight": "bold"
     };
 
-    if (this.state.element.type === "heading" || this.state.element.type === "character") {
+    if (this.state.element.type === "heading" ||
+        this.state.element.type === "character" ||
+        this.state.element.type === "transition"
+       ) {
       styles.textTransform = "uppercase";
     }
 
@@ -81,17 +161,15 @@ var ScriptElement = React.createClass({
   },
 
   handleChange: function() {
-    var element = {
-      type: this.state.element.type,
-      text: this.state.element.text
-    };
-
-    this.props.onElementChange(this.props.index, element);
+    this.props.onElementChange(this.props.index, this.state.element);
   },
 
   handleInput: function() {
-    this.setState({
-      text: this.refs.element.innerText
+    this.setState(function(oldState) {
+      var element = oldState.element;
+      element.text = this.refs.text.innerText;
+
+      return { element: element };
     }, function() {
       this.placeCaretAtEnd(
         document.getElementById(this.elementID())
@@ -106,7 +184,7 @@ var ScriptElement = React.createClass({
         id={this.elementID()}
         style={this.elementStyles()}
         onInput={this.handleInput}
-        ref="element"
+        ref="text"
         contentEditable="true">
         {this.state.element.text}
       </div>

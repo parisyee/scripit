@@ -3,7 +3,7 @@ var ScriptSection = React.createClass({
     "heading": "action",
     "action": "character",
     "character": "dialogue",
-    "dialogue": "heading"
+    "dialogue": "character"
   },
 
   getInitialState: function() {
@@ -22,6 +22,7 @@ var ScriptSection = React.createClass({
     this.setState({ section: section }, this.onSectionChange)
   },
 
+  // consider moving these into en ElementList
   handleElementChange: function(index, element) {
     this.setState(function(oldState) {
       var section = oldState.section;
@@ -31,11 +32,10 @@ var ScriptSection = React.createClass({
     }, this.onSectionChange);
   },
 
-  insertNewElement: function(index) {
+  createElement: function(index) {
     var nextIndex = index + 1;
     var nextType = this.NEW_ELEMENT_SEQUENCE_MAP[this.state.section.elements[index].type];
     var nextElement = { type: nextType, text: "" };
-    var nextID = nextType + "-" + nextIndex;
 
     this.setState(function(oldState) {
       var elements = oldState.section.elements.concat([]);
@@ -43,12 +43,61 @@ var ScriptSection = React.createClass({
 
       return { section:  { elements: elements } };
     }, function() {
-      $("#" + nextID).focus();
+      this.focusOnElement(nextIndex);
     });
   },
 
+  removeElement: function(index) {
+    if (index > 0) {
+      var previousIndex = index - 1;
+      var placeCaretAtEnd = this.placeCaretAtEnd;
+      var onSectionChange = this.onSectionChange;
+
+      this.setState(function(oldState) {
+        var elements = oldState.section.elements.concat([]);
+        elements.splice(index, 1);
+
+        return { section:  { elements: elements } };
+      }, function() {
+        this.focusOnElement(previousIndex, function() {
+          placeCaretAtEnd(previousIndex);
+          onSectionChange();
+        });
+      });
+    }
+  },
+
+  focusOnElement: function(index, callback) {
+    var elementId = this.state.section.elements[index].type + "-" + index;
+    $("#" + elementId).focus();
+
+    if (callback) {
+      callback();
+    }
+  },
+
+  placeCaretAtEnd: function(index) {
+    var elementId = this.state.section.elements[index].type + "-" + index;
+    var el = document.getElementById(elementId);
+
+    el.focus();
+    if (typeof window.getSelection != "undefined"
+        && typeof document.createRange != "undefined") {
+          var range = document.createRange();
+          range.selectNodeContents(el);
+          range.collapse(false);
+          var sel = window.getSelection();
+          sel.removeAllRanges();
+          sel.addRange(range);
+        } else if (typeof document.body.createTextRange != "undefined") {
+          var textRange = document.body.createTextRange();
+          textRange.moveToElementText(el);
+          textRange.collapse(false);
+          textRange.select();
+        }
+  },
+
   elementNodes: function() {
-    console.log("SECTION - state.section: %o", this.state.section);
     var nodes = this.state.section.elements.map(function(element, i) {
       return (
         <div className="uk-margin-left uk-margin-right">
@@ -57,7 +106,8 @@ var ScriptSection = React.createClass({
             index={i}
             element={element}
             onElementChange={this.handleElementChange}
-            onReturnKeydown={this.insertNewElement} />
+            onElementCreated={this.createElement}
+            onElementRemoved={this.removeElement} />
         </div>
       );
     }.bind(this));
@@ -72,14 +122,18 @@ var ScriptSection = React.createClass({
           {this.elementNodes()}
         </div>
         <div className="section-details uk-width-1-2" style={ { background: "purple" } }>
-          <input
-            ref="title"
-            value={this.state.section.title}
-            onInput={this.handleSectionDetailsChange} />
-          <textarea
-            ref="notes"
-            onInput={this.handleSectionDetailsChange}
-            value={this.state.section.notes}></textarea>
+          <form className="uk-form">
+            <input
+              className="uk-width-1-1 uk-margin-small-bottom"
+              ref="title"
+              value={this.state.section.title}
+              onInput={this.handleSectionDetailsChange} />
+            <textarea
+              className="uk-width-1-1"
+              ref="notes"
+              onInput={this.handleSectionDetailsChange}
+              value={this.state.section.notes}></textarea>
+          </form>
         </div>
       </div>
     );

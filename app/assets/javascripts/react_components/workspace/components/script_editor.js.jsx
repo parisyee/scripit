@@ -2,26 +2,24 @@ var ScriptEditor = React.createClass({
   AUTOSAVE_TIMER: null,
 
   getInitialState: function() {
-    return { document: this.props.document };
+    return {
+      document: {
+        id: this.props.document.id,
+        title: this.props.document.title,
+        sections: JSON.parse(this.props.document.content)
+      }
+    };
   },
 
-  // shouldComponentUpdate: function(nextProps, nextState) {
-  //   if (nextProps.document.id !== this.state.document.id) {
-  //     this.setState({ document: nextProps.document });
-  //     this.forceUpdate();
-  //   }
-
-  //   return true;
-  // },
-
   url: function() {
-    var id;
-    if (this.state.document.id) {
-      id = "/" + this.state.document.id;
-    } else {
-      id = "";
-    }
-    return this.props.url + id;
+    // var id;
+    // if (this.state.document.id) {
+    //   id = "/" + this.state.document.id;
+    // } else {
+    //   id = "";
+    // }
+
+    return this.props.url + "/" + this.state.document.id;
   },
 
   requestMethod: function() {
@@ -84,7 +82,6 @@ var ScriptEditor = React.createClass({
   },
 
   sectionList: function() {
-    console.log("EDITOR - state.document.sections: %o", this.state.document.sections);
     return (
       <SectionList
         documentId={this.state.document.id}
@@ -95,18 +92,21 @@ var ScriptEditor = React.createClass({
 
   render: function() {
     return (
-      <div className="document-editor uk-width-2-3">
-        <div id="autosave-indicator"></div>
-        <form className="uk-form">
-          <div className="uk-form-row">
-            <input
-              className="uk-width-1-1"
-              type="text"
-              name="document[title]"
-              value={this.state.document.title}
-              onChange={this.handleDocumentDetailsChange}
-              ref="title" />
-          </div>
+      <div className="document-editor uk-padding-right">
+        <form className="uk-form uk-margin-bottom uk-margin-top">
+          <input
+            className="uk-margin-left uk-width-7-10"
+            style={ { border: "none" } }
+            type="text"
+            name="document[title]"
+            value={this.state.document.title}
+            onChange={this.handleDocumentDetailsChange}
+            ref="title" />
+          <span
+            className="uk-width-2-10 uk-margin-left"
+            id="autosave-indicator"
+            style={ { background: "orange" } }>
+          </span>
         </form>
         {this.sectionList()}
       </div>

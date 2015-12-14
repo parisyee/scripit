@@ -14,5 +14,6 @@
 //= require jquery_ujs
 //= require react
 //= require react_ujs
+//= require uikit
 //= require react_components
 //= require_tree .
