@@ -18,7 +18,8 @@ var ScriptElement = React.createClass({
     "heading": "action",
     "action": "character",
     "character": "dialogue",
-    "dialogue": "character"
+    "dialogue": "character",
+    "transition": "heading"
   },
 
   TYPE_COLOR_MAP: {

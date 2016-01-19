@@ -81,15 +81,6 @@ var ScriptEditor = React.createClass({
     }, this.queueAutosave);
   },
 
-  sectionList: function() {
-    return (
-      <SectionList
-        documentId={this.state.document.id}
-        sections={this.state.document.sections}
-        onSectionChange={this.handleSectionChange} />
-    );
-  },
-
   render: function() {
     return (
       <div className="document-editor uk-padding-right">
@@ -108,7 +99,10 @@ var ScriptEditor = React.createClass({
             style={ { background: "orange" } }>
           </span>
         </form>
-        {this.sectionList()}
+        <SectionList
+          documentId={this.state.document.id}
+          sections={this.state.document.sections}
+          onSectionChange={this.handleSectionChange} />
       </div>
     );
   }
