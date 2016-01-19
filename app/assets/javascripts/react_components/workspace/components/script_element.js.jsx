@@ -125,8 +125,8 @@ var ScriptElement = React.createClass({
       background: this.TYPE_COLOR_MAP[this.state.element.type],
       minHeight: "25px",
       outline: "none",
-      "font-family": "'Courier New', Courier, monospace",
-      "font-weight": "bold"
+      "fontFamily": "'Courier New', Courier, monospace",
+      "fontWeight": "bold"
     };
 
     if (this.state.element.type === "heading" ||
@@ -143,52 +143,27 @@ var ScriptElement = React.createClass({
     return this.state.element.type + "-" + this.props.index;
   },
 
-  placeCaretAtEnd: function(el) {
-    el.focus();
-    if (typeof window.getSelection != "undefined"
-        && typeof document.createRange != "undefined") {
-          var range = document.createRange();
-          range.selectNodeContents(el);
-          range.collapse(false);
-          var sel = window.getSelection();
-          sel.removeAllRanges();
-          sel.addRange(range);
-        } else if (typeof document.body.createTextRange != "undefined") {
-          var textRange = document.body.createTextRange();
-          textRange.moveToElementText(el);
-          textRange.collapse(false);
-          textRange.select();
-        }
-  },
-
   handleChange: function() {
     this.props.onElementChange(this.props.index, this.state.element);
   },
 
-  handleInput: function() {
+  handleInput: function(event) {
     this.setState(function(oldState) {
       var element = oldState.element;
-      element.text = this.refs.text.innerText;
+      element.text = event.target.value;
 
       return { element: element };
-    }, function() {
-      this.placeCaretAtEnd(
-        document.getElementById(this.elementID())
-      );
-      this.handleChange();
-    });
+    }, this.handleChange);
   },
 
   render: function() {
     return (
-      <div className={this.classNames()}
+      <textarea
+        className={this.classNames()}
         id={this.elementID()}
         style={this.elementStyles()}
-        onInput={this.handleInput}
-        ref="text"
-        contentEditable="true">
-        {this.state.element.text}
-      </div>
+        onChange={this.handleInput}
+        value={this.state.element.text} />
     );
   }
 });

@@ -6,5 +6,5 @@ Rails.application.routes.draw do
       resources :documents, only: [:create, :update]
     end
   end
-  resources :documents, only: [:index, :show]
+  resources :documents, only: [:index, :new, :show, :destroy]
 end

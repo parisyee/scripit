@@ -36,11 +36,13 @@ var ScriptSection = React.createClass({
           <form className="uk-form">
             <input
               className="uk-width-1-1 uk-margin-small-bottom"
+              name="section[title]"
               ref="title"
               value={this.state.section.title}
               onInput={this.handleSectionDetailsChange} />
             <textarea
               className="uk-width-1-1"
+              name="section[notes]"
               ref="notes"
               onInput={this.handleSectionDetailsChange}
               value={this.state.section.notes}></textarea>
