@@ -12,7 +12,7 @@ RSpec.describe "Creating a script", :js, type: :feature do
     reload_page
 
     within ".document-editor" do
-      expect(page).to have_field "heading-0", with: "int. spaceship - day/night"
+      expect(page).to have_content "INT. SPACESHIP - DAY/NIGHT"
       expect(page).to have_field "document[title]", with: "Terminator X"
       expect(page).to have_field "section[title]", with: "Introduction"
       expect(page).to have_field "section[notes]", with: "This is the first part of the movie"
@@ -30,7 +30,12 @@ RSpec.describe "Creating a script", :js, type: :feature do
   end
 
   def edit_scene_heading(content)
-    fill_in "heading-0", with: "#{content}\n"
+    # THERE MUST BE A BETTER WAY!
+    execute_script(<<-JS)
+      var el = $("#heading-0-hidden-input");
+      el.val("#{content}");
+      el.trigger("input");
+    JS
   end
 
   def edit_section_title(title)

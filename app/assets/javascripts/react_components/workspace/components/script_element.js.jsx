@@ -18,7 +18,8 @@ var ScriptElement = React.createClass({
     "heading": "action",
     "action": "character",
     "character": "dialogue",
-    "dialogue": "character",
+    "dialogue": "parenthetical",
+    "parenthetical": "transition",
     "transition": "heading"
   },
 
@@ -27,7 +28,7 @@ var ScriptElement = React.createClass({
     "character": "lightblue",
     "dialogue": "yellow",
     "heading": "pink",
-    "parenthetical": "lightpurple",
+    "parenthetical": "lightgrey",
     "transition": "orange"
   },
 
@@ -82,7 +83,7 @@ var ScriptElement = React.createClass({
     return this.NEXT_ELEMENT_SEQUENCE_MAP[type];
   },
 
-  componentDidMount: function() {
+  bindCommandKeys: function() {
     var BACKSPACE_KEYCODE = this.KEYCODES.backspace;
     var CARRIAGE_RETRUN_KEYCODE = this.KEYCODES.carriageRetrun;
     var TAB_KEYCODE = this.KEYCODES.tab;
@@ -106,7 +107,25 @@ var ScriptElement = React.createClass({
     });
   },
 
-  classNames: function() {
+  bindHiddenInput: function() {
+    var handleHiddenFieldInput = this.handleHiddenFieldInput;
+
+    $("#" + this.elementHiddenInputID()).on("input", function() {
+      handleHiddenFieldInput();
+    });
+  },
+
+  populateDisplayInput: function() {
+    this.refs.displayedField.innerText = this.state.element.text;
+  },
+
+  componentDidMount: function() {
+    this.bindCommandKeys();
+    this.bindHiddenInput();
+    this.populateDisplayInput();
+  },
+
+  wrapperClassNames: function() {
     var classes = "script-element " + this.state.element.type;
 
     if (this.state.element.type === "character") {
@@ -123,8 +142,11 @@ var ScriptElement = React.createClass({
   elementStyles: function() {
     var styles = {
       background: this.TYPE_COLOR_MAP[this.state.element.type],
-      minHeight: "25px",
+      width: "100%",
+      minHeight: "20px",
       outline: "none",
+      border: "none",
+      "fontSize": "12px",
       "fontFamily": "'Courier New', Courier, monospace",
       "fontWeight": "bold"
     };
@@ -143,27 +165,53 @@ var ScriptElement = React.createClass({
     return this.state.element.type + "-" + this.props.index;
   },
 
-  handleChange: function() {
-    this.props.onElementChange(this.props.index, this.state.element);
+  elementHiddenInputID: function() {
+    return this.state.element.type + "-" + this.props.index + "-hidden-input";
   },
 
   handleInput: function(event) {
     this.setState(function(oldState) {
       var element = oldState.element;
-      element.text = event.target.value;
+      element.text = event.target.innerText;
+      this.refs.hiddenField.value = event.target.innerText;
+      $("#" + this.elementHiddenInputID()).trigger("input");
+
+      return { element: element };
+    });
+  },
+
+  handleHiddenFieldInput: function() {
+    this.setState(function(oldState) {
+      var element = oldState.element;
+      element.text = $("#" + this.elementHiddenInputID()).val();
 
       return { element: element };
     }, this.handleChange);
   },
 
+  handleChange: function() {
+    this.props.onElementChange(this.props.index, this.state.element);
+  },
+
   render: function() {
     return (
-      <textarea
-        className={this.classNames()}
+      <div
         id={this.elementID()}
-        style={this.elementStyles()}
-        onChange={this.handleInput}
-        value={this.state.element.text} />
+        className={this.wrapperClassNames()}>
+        <div
+          className="displayedField"
+          ref="displayedField"
+          style={this.elementStyles()}
+          onInput={this.handleInput}
+          contentEditable="true">
+        </div>
+        <input
+          id={this.elementHiddenInputID()}
+          ref="hiddenField"
+          onInput={this.handleHiddenFieldInput}
+          className={"uk-hidden"}
+          defaultValue={this.state.element.text} />
+      </div>
     );
   }
 });

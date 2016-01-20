@@ -11,14 +11,10 @@ var ScriptEditor = React.createClass({
     };
   },
 
-  url: function() {
-    // var id;
-    // if (this.state.document.id) {
-    //   id = "/" + this.state.document.id;
-    // } else {
-    //   id = "";
-    // }
+  bindTextareaResizer: function() {
+  },
 
+  url: function() {
     return this.props.url + "/" + this.state.document.id;
   },
 
@@ -83,7 +79,7 @@ var ScriptEditor = React.createClass({
 
   render: function() {
     return (
-      <div className="document-editor uk-padding-right">
+      <div className="document-editor uk-padding-right uk-height-1-1">
         <form className="uk-form uk-margin-bottom uk-margin-top">
           <input
             className="uk-margin-left uk-width-7-10"
@@ -100,6 +96,7 @@ var ScriptEditor = React.createClass({
           </span>
         </form>
         <SectionList
+          style={ { height: "90%" } }
           documentId={this.state.document.id}
           sections={this.state.document.sections}
           onSectionChange={this.handleSectionChange} />

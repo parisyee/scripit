@@ -19,7 +19,7 @@ var SectionList = React.createClass({
 
   render: function() {
     return (
-      <div className="section-list" style={ { minHeight: 40 } }>
+      <div className="section-list uk-height-1-1" style={ { minHeight: 40 } }>
         {this.sectionNodes()}
       </div>
     );

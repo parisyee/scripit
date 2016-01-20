@@ -4,7 +4,8 @@ var ElementList = React.createClass({
     "action": "character",
     "character": "dialogue",
     "dialogue": "character",
-    "transition": "heading"
+    "transition": "heading",
+    "parenthetical": "dialogue"
   },
 
   getInitialState: function() {
@@ -60,8 +61,8 @@ var ElementList = React.createClass({
   },
 
   focusOnElement: function(index, callback) {
-    var elementId = this.state.elements[index].type + "-" + index;
-    $("#" + elementId).focus();
+    var displayedField = $(ReactDOM.findDOMNode(this).children[index]).find(".displayedField")
+    displayedField.focus();
 
     if (callback) {
       callback();
@@ -69,8 +70,7 @@ var ElementList = React.createClass({
   },
 
   placeCaretAtEnd: function(index) {
-    var elementId = this.state.elements[index].type + "-" + index;
-    var el = document.getElementById(elementId);
+    var el = ReactDOM.findDOMNode(this).children[index].getElementsByClassName("displayedField")[0];
 
     el.focus();
     if (typeof window.getSelection != "undefined"

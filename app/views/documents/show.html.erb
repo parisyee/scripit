@@ -1,1 +1,5 @@
-<%= react_component "ScriptEditor", { document: document, url: "/api/v1/documents" } %>
+<%= react_component(
+  "ScriptEditor",
+  { document: document, url: "/api/v1/documents" },
+  { class: "screenplay-editor" }
+) %>
