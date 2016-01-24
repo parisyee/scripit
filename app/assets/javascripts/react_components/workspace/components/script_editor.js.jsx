@@ -79,7 +79,7 @@ var ScriptEditor = React.createClass({
 
   render: function() {
     return (
-      <div className="document-editor uk-padding-right uk-height-1-1">
+      <div className="document-editor uk-height-1-1">
         <form className="uk-form uk-margin-bottom uk-margin-top">
           <input
             className="uk-margin-left uk-width-7-10"

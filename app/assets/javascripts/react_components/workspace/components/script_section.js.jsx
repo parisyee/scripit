@@ -24,30 +24,46 @@ var ScriptSection = React.createClass({
     this.setState({ section: section }, this.onSectionChange)
   },
 
+  sectionNotesStyles: function() {
+    return {
+      resize: "none",
+      border: "none",
+      outline: "none",
+      "fontSize": "14px"
+    };
+  },
+
+  sectionTitleStyles: function() {
+    return {
+      "fontSize": "14px"
+    };
+  },
+
   render: function() {
     return (
-      <div className="script-section uk-grid uk-grid-collapse uk-height-1-1">
+      <div className="script-section uk-grid uk-margin-left uk-margin-right uk-height-1-1">
         <input
-          className="uk-width-1-1 uk-margin-small-bottom"
+          className="uk-width-1-1 uk-padding-remove uk-margin-bottom"
+          style={this.sectionTitleStyles()}
           name="section[title]"
           ref="title"
-          value={this.state.section.title}
+          defaultValue={this.state.section.title}
           onInput={this.handleSectionDetailsChange} />
         <div
-          className="section-elements uk-width-1-2 uk-height-1-1"
-          style={ { background: "lightgrey", overflow: "scroll" } }>
+          className="section-elements uk-padding-remove uk-width-1-2 uk-height-1-1"
+          style={ { "overflowY": "scroll" } }>
           <ElementList
             elements={this.state.section.elements}
             onElementListChange={this.handleElementListChange} />
         </div>
-        <div className="section-details uk-width-1-2 uk-height-1-1" style={ { background: "purple" } }>
+        <div className="section-details uk-width-1-2 uk-height-1-1">
           <textarea
             className="uk-width-1-1 uk-height-1-1"
-            style={ { resize: "none", border: "none", outline: "none", "font-size": "12px"} }
+            style={this.sectionNotesStyles()}
             name="section[notes]"
             ref="notes"
             onInput={this.handleSectionDetailsChange}
-            value={this.state.section.notes}></textarea>
+            defaultValue={this.state.section.notes}></textarea>
         </div>
       </div>
     );

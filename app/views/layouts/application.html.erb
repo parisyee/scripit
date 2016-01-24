@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="uk-height-viewport">
   <head>
-    <title>Script it.</title>
+    <title><%= Rails.env.development? ? "DEV" : "Script it." %></title>
     <%= favicon_link_tag "quill.png" %>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag "application" %>

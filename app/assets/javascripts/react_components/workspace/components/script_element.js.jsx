@@ -129,9 +129,9 @@ var ScriptElement = React.createClass({
     var classes = "script-element " + this.state.element.type;
 
     if (this.state.element.type === "character") {
-      classes += " uk-width-medium-1-3 uk-push-1-3";
+      classes += " uk-width-2-10 uk-push-4-10 uk-text-center";
     } else if (this.state.element.type === "dialogue") {
-      classes += " uk-width-medium-3-5 uk-push-1-5";
+      classes += " uk-width-5-10 uk-push-3-10";
     } else {
       classes += " uk-width-1-1";
     }
@@ -141,12 +141,12 @@ var ScriptElement = React.createClass({
 
   elementStyles: function() {
     var styles = {
-      background: this.TYPE_COLOR_MAP[this.state.element.type],
+      // background: this.TYPE_COLOR_MAP[this.state.element.type],
       width: "100%",
       minHeight: "20px",
       outline: "none",
       border: "none",
-      "fontSize": "12px",
+      "fontSize": "14px",
       "fontFamily": "'Courier New', Courier, monospace",
       "fontWeight": "bold"
     };
@@ -159,6 +159,18 @@ var ScriptElement = React.createClass({
     }
 
     return styles;
+  },
+
+  displayedFieldClasses: function() {
+    var classes = "displayedField";
+
+    if (this.state.element.type === "heading" ||
+        this.state.element.type === "action" ||
+        this.state.element.type === "transition") {
+         classes += " uk-margin-small-bottom"
+    }
+
+    return classes;
   },
 
   elementID: function() {
@@ -199,7 +211,7 @@ var ScriptElement = React.createClass({
         id={this.elementID()}
         className={this.wrapperClassNames()}>
         <div
-          className="displayedField"
+          className={this.displayedFieldClasses()}
           ref="displayedField"
           style={this.elementStyles()}
           onInput={this.handleInput}
