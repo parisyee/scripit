@@ -164,10 +164,8 @@ var ScriptElement = React.createClass({
   displayedFieldClasses: function() {
     var classes = "displayedField";
 
-    if (this.state.element.type === "heading" ||
-        this.state.element.type === "action" ||
-        this.state.element.type === "transition") {
-         classes += " uk-margin-small-bottom"
+    if (this.state.element.type !== "character") {
+      classes += " uk-margin-bottom";
     }
 
     return classes;
