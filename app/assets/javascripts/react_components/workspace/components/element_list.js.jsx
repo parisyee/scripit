@@ -1,7 +1,7 @@
 var ElementList = React.createClass({
   NEW_ELEMENT_SEQUENCE_MAP: {
     "heading": "action",
-    "action": "character",
+    "action": "action",
     "character": "dialogue",
     "dialogue": "character",
     "transition": "heading",
