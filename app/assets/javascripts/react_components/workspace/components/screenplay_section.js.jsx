@@ -1,4 +1,4 @@
-var ScriptSection = React.createClass({
+var ScreenplaySection = React.createClass({
   getInitialState: function() {
     return { section: this.props.section };
   },
@@ -52,7 +52,7 @@ var ScriptSection = React.createClass({
         <div
           className="section-elements uk-padding-remove uk-width-1-2 uk-height-1-1"
           style={ { "overflowY": "scroll" } }>
-          <ElementList
+          <ScreenplayElementList
             elements={this.state.section.elements}
             onElementListChange={this.handleElementListChange} />
         </div>

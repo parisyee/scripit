@@ -1,4 +1,4 @@
-var ScriptElement = React.createClass({
+var ScreenplayElement = React.createClass({
   ELEMENT_TYPES: {
     action: "action",
     character: "character",

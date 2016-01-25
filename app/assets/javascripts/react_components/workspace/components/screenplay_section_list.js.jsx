@@ -1,4 +1,4 @@
-var SectionList = React.createClass({
+var ScreenplaySectionList = React.createClass({
   getInitialState: function() {
     return { sections: this.props.sections };
   },
@@ -6,7 +6,7 @@ var SectionList = React.createClass({
   sectionNodes: function() {
     var nodes = this.state.sections.map(function(section, i) {
       return (
-        <ScriptSection
+        <ScreenplaySection
           key={i}
           index={i}
           section={section}

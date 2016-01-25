@@ -1,4 +1,4 @@
-var ElementList = React.createClass({
+var ScreenplayElementList = React.createClass({
   NEW_ELEMENT_SEQUENCE_MAP: {
     "heading": "action",
     "action": "action",
@@ -93,7 +93,7 @@ var ElementList = React.createClass({
     var nodes = this.state.elements.map(function(element, i) {
       return (
         <div className="uk-margin-left uk-margin-right">
-          <ScriptElement
+          <ScreenplayElement
             key={i}
             index={i}
             element={element}

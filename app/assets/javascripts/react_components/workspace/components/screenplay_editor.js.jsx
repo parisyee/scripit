@@ -1,12 +1,12 @@
-var ScriptEditor = React.createClass({
+var ScreenplayEditor = React.createClass({
   AUTOSAVE_TIMER: null,
 
   getInitialState: function() {
     return {
-      document: {
-        id: this.props.document.id,
-        title: this.props.document.title,
-        sections: JSON.parse(this.props.document.content)
+      screenplay: {
+        id: this.props.screenplay.id,
+        title: this.props.screenplay.title,
+        sections: JSON.parse(this.props.screenplay.content)
       }
     };
   },
@@ -15,32 +15,32 @@ var ScriptEditor = React.createClass({
   },
 
   url: function() {
-    return this.props.url + "/" + this.state.document.id;
+    return this.props.url + "/" + this.state.screenplay.id;
   },
 
   requestMethod: function() {
-    return this.state.document.id ? "PUT" : "POST";
+    return this.state.screenplay.id ? "PUT" : "POST";
   },
 
-  buildDocument: function() {
+  buildScreenplay: function() {
     return {
-      title: this.state.document.title,
-      content: JSON.stringify(this.state.document.sections)
+      title: this.state.screenplay.title,
+      content: JSON.stringify(this.state.screenplay.sections)
     };
   },
 
-  saveDocument: function() {
+  saveScreenplay: function() {
     $.ajax({
       url: this.url(),
       method: this.requestMethod(),
-      data: { document: this.buildDocument() },
+      data: { screenplay: this.buildScreenplay() },
       dataType: "json",
       success: function(data) {
         $("#autosave-indicator").html("Changes Saved");
-        if (!this.props.document.id) {
-          var document = this.state.document;
-          document.id = data.id;
-          this.setState({ document: document });
+        if (!this.props.screenplay.id) {
+          var screenplay = this.state.screenplay;
+          screenplay.id = data.id;
+          this.setState({ screenplay: screenplay });
         }
       }.bind(this),
       error: function(xhr, status, err) {
@@ -57,37 +57,37 @@ var ScriptEditor = React.createClass({
     $("#autosave-indicator").html("Saving Changes...");
 
     this.AUTOSAVE_TIMER = setTimeout(function() {
-      this.saveDocument();
+      this.saveScreenplay();
       this.AUTOSAVE_TIMER = null;
     }.bind(this), 2000);
   },
 
-  handleDocumentDetailsChange: function() {
-    var document = this.state.document;
-    document.title = this.refs.title.value;
-    this.setState({ document: document }, this.queueAutosave);
+  handleScreenplayDetailsChange: function() {
+    var screenplay = this.state.screenplay;
+    screenplay.title = this.refs.title.value;
+    this.setState({ screenplay: screenplay }, this.queueAutosave);
   },
 
   handleSectionChange: function(index, section) {
     this.setState(function(oldState) {
-      var document = oldState.document;
-      document.sections.splice(index, 1, section);
+      var screenplay = oldState.screenplay;
+      screenplay.sections.splice(index, 1, section);
 
-      return { document: document };
+      return { screenplay: screenplay };
     }, this.queueAutosave);
   },
 
   render: function() {
     return (
-      <div className="document-editor uk-height-1-1">
+      <div className="uk-height-1-1">
         <form className="uk-form uk-margin-bottom uk-margin-top">
           <input
             className="uk-margin-left uk-width-7-10"
             style={ { border: "none" } }
             type="text"
-            name="document[title]"
-            value={this.state.document.title}
-            onChange={this.handleDocumentDetailsChange}
+            name="screenplay[title]"
+            value={this.state.screenplay.title}
+            onChange={this.handleScreenplayDetailsChange}
             ref="title" />
           <span
             className="uk-width-2-10 uk-margin-left"
@@ -95,10 +95,10 @@ var ScriptEditor = React.createClass({
             style={ { background: "orange" } }>
           </span>
         </form>
-        <SectionList
+        <ScreenplaySectionList
           style={ { height: "90%" } }
-          documentId={this.state.document.id}
-          sections={this.state.document.sections}
+          screenplayId={this.state.screenplay.id}
+          sections={this.state.screenplay.sections}
           onSectionChange={this.handleSectionChange} />
       </div>
     );

@@ -1,9 +1,9 @@
 require "rails_helper"
 
-RSpec.describe "Creating a script", :js, type: :feature do
+RSpec.describe "Creating a screenplay", :js, type: :feature do
   scenario do
-    visit_scripts
-    add_script("Terminator X")
+    visit_screenplays
+    add_screenplay("Terminator X")
     edit_scene_heading("int. spaceship - day/night")
     edit_section_title("Introduction")
     edit_section_notes("This is the first part of the movie")
@@ -11,22 +11,22 @@ RSpec.describe "Creating a script", :js, type: :feature do
 
     reload_page
 
-    within ".document-editor" do
+    within ".screenplay-editor" do
       expect(page).to have_content "INT. SPACESHIP - DAY/NIGHT"
-      expect(page).to have_field "document[title]", with: "Terminator X"
+      expect(page).to have_field "screenplay[title]", with: "Terminator X"
       expect(page).to have_field "section[title]", with: "Introduction"
       expect(page).to have_field "section[notes]", with: "This is the first part of the movie"
     end
   end
 
-  def visit_scripts
+  def visit_screenplays
     visit "/"
   end
 
-  def add_script(title)
-    click_link "New Script"
+  def add_screenplay(title)
+    click_link "New Screenplay"
     wait_for_screenplay_editor
-    fill_in "document[title]", with: title
+    fill_in "screenplay[title]", with: title
   end
 
   def edit_scene_heading(content)
@@ -66,6 +66,6 @@ RSpec.describe "Creating a script", :js, type: :feature do
 
   def screenplay_editor_has_loaded?
     page.evaluate_script("typeof React === 'object'") &&
-      page.find(".document-editor")
+      page.find(".screenplay-editor")
   end
 end
