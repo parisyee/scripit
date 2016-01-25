@@ -23,15 +23,6 @@ var ScriptElement = React.createClass({
     "transition": "heading"
   },
 
-  TYPE_COLOR_MAP: {
-    "action": "lightgreen",
-    "character": "lightblue",
-    "dialogue": "yellow",
-    "heading": "pink",
-    "parenthetical": "lightgrey",
-    "transition": "orange"
-  },
-
   propTypes: {
     element: React.PropTypes.object.isRequired,
     index: React.PropTypes.number.isRequired,
@@ -41,6 +32,10 @@ var ScriptElement = React.createClass({
 
   getInitialState: function() {
     return { element: this.props.element }
+  },
+
+  nextElementType: function(type) {
+    return this.NEXT_ELEMENT_SEQUENCE_MAP[type];
   },
 
   handleBackspaceKeydown: function(event) {
@@ -79,10 +74,6 @@ var ScriptElement = React.createClass({
     }, this.handleChange);
   },
 
-  nextElementType: function(type) {
-    return this.NEXT_ELEMENT_SEQUENCE_MAP[type];
-  },
-
   bindCommandKeys: function() {
     var BACKSPACE_KEYCODE = this.KEYCODES.backspace;
     var CARRIAGE_RETRUN_KEYCODE = this.KEYCODES.carriageRetrun;
@@ -107,6 +98,16 @@ var ScriptElement = React.createClass({
     });
   },
 
+  bindElementIndicator: function() {
+    $("#" + this.elementID()).on("blur", ".displayedField", function() {
+      $(this).parent().find(".elementIndicator").addClass("uk-hidden");
+    });
+
+    $("#" + this.elementID()).on("focus", ".displayedField", function() {
+      $(this).parent().find(".elementIndicator").removeClass("uk-hidden");
+    });
+  },
+
   bindHiddenInput: function() {
     var handleHiddenFieldInput = this.handleHiddenFieldInput;
 
@@ -122,53 +123,12 @@ var ScriptElement = React.createClass({
   componentDidMount: function() {
     this.bindCommandKeys();
     this.bindHiddenInput();
+    this.bindElementIndicator();
     this.populateDisplayInput();
   },
 
-  wrapperClassNames: function() {
-    var classes = "script-element " + this.state.element.type;
-
-    if (this.state.element.type === "character") {
-      classes += " uk-width-2-10 uk-push-4-10 uk-text-center";
-    } else if (this.state.element.type === "dialogue") {
-      classes += " uk-width-5-10 uk-push-3-10";
-    } else {
-      classes += " uk-width-1-1";
-    }
-
-    return classes;
-  },
-
-  elementStyles: function() {
-    var styles = {
-      // background: this.TYPE_COLOR_MAP[this.state.element.type],
-      width: "100%",
-      minHeight: "20px",
-      outline: "none",
-      border: "none",
-      "fontSize": "14px",
-      "fontFamily": "'Courier New', Courier, monospace",
-      "fontWeight": "bold"
-    };
-
-    if (this.state.element.type === "heading" ||
-        this.state.element.type === "character" ||
-        this.state.element.type === "transition"
-       ) {
-      styles.textTransform = "uppercase";
-    }
-
-    return styles;
-  },
-
-  displayedFieldClasses: function() {
-    var classes = "displayedField";
-
-    if (this.state.element.type !== "character") {
-      classes += " uk-margin-bottom";
-    }
-
-    return classes;
+  elementIndicator: function() {
+    return this.state.element.type[0].toUpperCase();
   },
 
   elementID: function() {
@@ -203,6 +163,51 @@ var ScriptElement = React.createClass({
     this.props.onElementChange(this.props.index, this.state.element);
   },
 
+  wrapperClassNames: function() {
+    var classes = "script-element " + this.state.element.type;
+
+    if (this.state.element.type === "character") {
+      classes += " uk-width-2-10 uk-push-4-10 uk-text-center";
+    } else if (this.state.element.type === "dialogue") {
+      classes += " uk-width-5-10 uk-push-3-10";
+    } else {
+      classes += " uk-width-1-1";
+    }
+
+    return classes;
+  },
+
+  displayedFieldClasses: function() {
+    var classes = "displayedField uk-float-left";
+
+    if (this.state.element.type !== "character") {
+      classes += " uk-margin-bottom";
+    }
+
+    return classes;
+  },
+
+  displayFieldStyles: function() {
+    var styles = {
+      width: "90%",
+      minHeight: "20px",
+      outline: "none",
+      border: "none",
+      "fontSize": "14px",
+      "fontFamily": "'Courier New', Courier, monospace",
+      "fontWeight": "bold"
+    };
+
+    if (this.state.element.type === "heading" ||
+        this.state.element.type === "character" ||
+        this.state.element.type === "transition"
+       ) {
+      styles.textTransform = "uppercase";
+    }
+
+    return styles;
+  },
+
   render: function() {
     return (
       <div
@@ -211,10 +216,15 @@ var ScriptElement = React.createClass({
         <div
           className={this.displayedFieldClasses()}
           ref="displayedField"
-          style={this.elementStyles()}
+          style={this.displayFieldStyles()}
           onInput={this.handleInput}
           contentEditable="true">
         </div>
+        <span
+          className="elementIndicator uk-hidden uk-float-right"
+          style={ { width: "10%" } }>
+          {this.elementIndicator()}
+        </span>
         <input
           id={this.elementHiddenInputID()}
           ref="hiddenField"
