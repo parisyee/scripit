@@ -3,7 +3,7 @@
     <h1>Screenplays</h1>
   </div>
   <div class="uk-grid-1-3">
-    <%= link_to "New Screenplay", new_screenplay_path %>
+    <%#= link_to "New Screenplay", new_screenplay_path %>
   </div>
 </div>
 <div>
@@ -14,8 +14,15 @@
     </thead>
   <% screenplays.each do |screenplay| %>
     <tr>
-      <td><%= link_to "#{screenplay.id} - #{screenplay.title}", screenplay_path(screenplay) %></td>
-      <td><%= link_to "X", screenplay_path(screenplay), method: :delete %></td>
+      <td>
+        <%= link_to(
+          "#{screenplay.id} - #{screenplay.title}",
+          screenplay_workspace_path(screenplay)
+        ) %>
+      </td>
+      <td>
+        <%= link_to "X", screenplay_path(screenplay), method: :delete %>
+      </td>
     </tr>
   <% end %>
 </div>

@@ -3,25 +3,25 @@ var ScreenplaySection = React.createClass({
     return { section: this.props.section };
   },
 
-  onSectionChange: function() {
-    this.props.onSectionChange(this.props.index, this.state.section)
-  },
+  // onSectionChange: function() {
+  //   this.props.onSectionChange(this.props.index, this.state.section)
+  // },
 
-  handleElementListChange: function(elements) {
-    this.setState(function(oldState) {
-      var section = oldState.section;
-      section.elements = elements;
+  // handleElementListChange: function(elements) {
+  //   this.setState(function(oldState) {
+  //     var section = oldState.section;
+  //     section.elements = elements;
 
-      return { section: section };
-    }, this.onSectionChange)
-  },
+  //     return { section: section };
+  //   }, this.onSectionChange)
+  // },
 
   handleSectionDetailsChange: function() {
     var section = this.state.section;
     section.title = this.refs.title.value;
     section.notes = this.refs.notes.value;
 
-    this.setState({ section: section }, this.onSectionChange)
+    this.setState({ section: section })// this.saveSection)
   },
 
   sectionNotesStyles: function() {
@@ -52,9 +52,7 @@ var ScreenplaySection = React.createClass({
         <div
           className="section-elements uk-padding-remove uk-width-1-2 uk-height-1-1"
           style={ { "overflowY": "scroll" } }>
-          <ScreenplayElementList
-            elements={this.state.section.elements}
-            onElementListChange={this.handleElementListChange} />
+          <ScreenplayElementList elements={this.state.section.elements} />
         </div>
         <div className="section-details uk-width-1-2 uk-height-1-1">
           <textarea

@@ -37,6 +37,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
+    acts_as_list (0.7.2)
+      activerecord (>= 3.0)
     addressable (2.4.0)
     arel (6.0.3)
     babel-source (5.8.35)
@@ -51,7 +53,7 @@ GEM
       debug_inspector (>= 0.0.1)
     builder (3.2.2)
     byebug (8.2.1)
-    capybara (2.6.0)
+    capybara (2.6.2)
       addressable
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -74,21 +76,29 @@ GEM
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     diff-lcs (1.2.5)
+    diffy (3.1.0)
     envied (0.8.1)
       coercible (~> 1.0)
       rack (~> 1.4)
       thor (~> 0.15)
     erubis (2.7.0)
     execjs (2.6.0)
+    factory_girl (4.5.0)
+      activesupport (>= 3.0.0)
+    factory_girl_rails (4.5.0)
+      factory_girl (~> 4.5.0)
+      railties (>= 3.0.0)
     gem-ctags (1.0.7)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     i18n (0.7.0)
+    its-it (1.2.0)
     jquery-rails (4.1.0)
       rails-dom-testing (~> 1.0)
       railties (>= 4.2.0)
       thor (>= 0.14, < 2.0)
     json (1.8.3)
+    key_struct (0.4.2)
     launchy (2.4.3)
       addressable (~> 2.3)
     loofah (2.0.3)
@@ -99,6 +109,10 @@ GEM
     mime-types (2.99)
     mini_portile2 (2.0.0)
     minitest (5.8.4)
+    modware (0.1.2)
+      its-it
+      key_struct (~> 0.4)
+    multi_json (1.11.2)
     nokogiri (1.6.7.2)
       mini_portile2 (~> 2.0.0.rc2)
     pg (0.18.4)
@@ -136,7 +150,7 @@ GEM
       activesupport (>= 4.2.0.beta, < 5.0)
       nokogiri (~> 1.6.0)
       rails-deprecated_sanitizer (>= 1.0.1)
-    rails-html-sanitizer (1.0.2)
+    rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
     railties (4.2.4)
       actionpack (= 4.2.4)
@@ -151,7 +165,20 @@ GEM
       execjs
       rails (>= 3.2)
       tilt
-    rspec-core (3.4.1)
+    representable (2.3.0)
+      uber (~> 0.0.7)
+    responders (2.1.1)
+      railties (>= 4.2.0, < 5.1)
+    roar (1.0.4)
+      representable (>= 2.0.1, < 2.4.0)
+    roar-rails (1.0.1)
+      actionpack
+      railties (>= 3.0.0)
+      responders
+      roar (>= 1.0.0, <= 1.1.0)
+      test_xml (>= 0.1.6)
+      uber (>= 0.0.5)
+    rspec-core (3.4.2)
       rspec-support (~> 3.4.0)
     rspec-expectations (3.4.0)
       diff-lcs (>= 1.2.0, < 2.0)
@@ -159,7 +186,7 @@ GEM
     rspec-mocks (3.4.1)
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
-    rspec-rails (3.4.0)
+    rspec-rails (3.4.1)
       actionpack (>= 3.0, < 4.3)
       activesupport (>= 3.0, < 4.3)
       railties (>= 3.0, < 4.3)
@@ -168,9 +195,6 @@ GEM
       rspec-mocks (~> 3.4.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
-    rspec_junit_formatter (0.2.2)
-      builder (< 4)
-      rspec-core (>= 2, < 4, != 2.12.0)
     sass (3.4.21)
     sass-rails (5.0.4)
       railties (>= 4.0.0, < 5.0)
@@ -178,6 +202,23 @@ GEM
       sprockets (>= 2.8, < 4.0)
       sprockets-rails (>= 2.0, < 4.0)
       tilt (>= 1.1, < 3)
+    schema_auto_foreign_keys (0.1.0)
+      schema_plus_foreign_keys (~> 0.1)
+      schema_plus_indexes (~> 0.2)
+    schema_monkey (2.1.3)
+      activerecord (~> 4.2)
+      its-it
+      modware (~> 0.1)
+    schema_plus_core (0.6.2)
+      activerecord (~> 4.2)
+      schema_monkey (~> 2.1)
+    schema_plus_foreign_keys (0.1.2)
+      activerecord (~> 4.2)
+      schema_plus_core (~> 0.5)
+      valuable
+    schema_plus_indexes (0.2.0)
+      activerecord (~> 4.2)
+      schema_plus_core (~> 0.1)
     simple_form (3.2.1)
       actionpack (> 4, < 5.1)
       activemodel (> 4, < 5.1)
@@ -192,15 +233,20 @@ GEM
       actionpack (>= 4.0)
       activesupport (>= 4.0)
       sprockets (>= 3.0.0)
+    test_xml (0.1.7)
+      diffy (~> 3.0)
+      nokogiri (>= 1.3.2)
     thor (0.19.1)
     thread_safe (0.3.5)
     tilt (2.0.2)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)
+    uber (0.0.15)
     uglifier (2.7.2)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
     unicode_utils (1.4.0)
+    valuable (0.9.10)
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -208,6 +254,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  acts_as_list
   better_errors
   binding_of_caller
   byebug
@@ -215,9 +262,11 @@ DEPENDENCIES
   capybara-webkit
   database_cleaner
   envied
+  factory_girl_rails (~> 4.0)
   gem-ctags
   jquery-rails
   launchy
+  multi_json
   pg
   pry-coolline
   pry-rails
@@ -225,13 +274,15 @@ DEPENDENCIES
   rails (= 4.2.4)
   rails-assets-uikit!
   react-rails
+  responders
+  roar-rails
   rspec-rails (~> 3.0)
-  rspec_junit_formatter (= 0.2.2)
   sass-rails (~> 5.0)
+  schema_auto_foreign_keys
   simple_form
   spring
   spring-commands-rspec
   uglifier (>= 1.3.0)
 
 BUNDLED WITH
-   1.10.6
+   1.11.2

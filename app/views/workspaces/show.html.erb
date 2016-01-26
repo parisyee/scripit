@@ -1,0 +1,10 @@
+<%= react_component(
+  "ScreenplayWorkspace",
+  {
+    screenplay: screenplay,
+    screenplaysUrl: api_v1_screenplays_path,
+    sectionsUrl: api_v1_sections_path,
+    elementsUrl: api_v1_elements_path
+  },
+  { class: "screenplay-editor" }
+) %>

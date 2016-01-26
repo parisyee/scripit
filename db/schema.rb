@@ -11,16 +11,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160125215332) do
+ActiveRecord::Schema.define(version: 20160127003140) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "screenplays", force: :cascade do |t|
     t.string   "title"
-    t.text     "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "sections", force: :cascade do |t|
+    t.integer "screenplay_id", null: false, foreign_key: {references: "screenplays", name: "fk_sections_screenplay_id", on_update: :no_action, on_delete: :no_action}, index: {name: "fk__sections_screenplay_id", using: :btree}
+    t.text    "title"
+    t.text    "notes"
+    t.integer "position",      null: false
+  end
+
+  create_table "elements", force: :cascade do |t|
+    t.integer "section_id", null: false, foreign_key: {references: "sections", name: "fk_elements_section_id", on_update: :no_action, on_delete: :no_action}, index: {name: "fk__elements_section_id", using: :btree}
+    t.text    "type"
+    t.text    "text"
+    t.integer "position",   null: false
   end
 
 end

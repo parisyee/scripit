@@ -1,21 +1,12 @@
-var ScreenplayEditor = React.createClass({
+var ScreenplayWorkspace = React.createClass({
   AUTOSAVE_TIMER: null,
 
   getInitialState: function() {
-    return {
-      screenplay: {
-        id: this.props.screenplay.id,
-        title: this.props.screenplay.title,
-        sections: JSON.parse(this.props.screenplay.content)
-      }
-    };
+    return { screenplay: JSON.parse(this.props.screenplay) };
   },
 
-  bindTextareaResizer: function() {
-  },
-
-  url: function() {
-    return this.props.url + "/" + this.state.screenplay.id;
+  screenplayUrl: function() {
+    return this.props.screenplaysUrl + "/" + this.state.screenplay.id;
   },
 
   requestMethod: function() {
@@ -24,8 +15,7 @@ var ScreenplayEditor = React.createClass({
 
   buildScreenplay: function() {
     return {
-      title: this.state.screenplay.title,
-      content: JSON.stringify(this.state.screenplay.sections)
+      title: this.state.screenplay.title
     };
   },
 
@@ -68,14 +58,14 @@ var ScreenplayEditor = React.createClass({
     this.setState({ screenplay: screenplay }, this.queueAutosave);
   },
 
-  handleSectionChange: function(index, section) {
-    this.setState(function(oldState) {
-      var screenplay = oldState.screenplay;
-      screenplay.sections.splice(index, 1, section);
+  // handleSectionChange: function(index, section) {
+  //   this.setState(function(oldState) {
+  //     var screenplay = oldState.screenplay;
+  //     screenplay.sections.splice(index, 1, section);
 
-      return { screenplay: screenplay };
-    }, this.queueAutosave);
-  },
+  //     return { screenplay: screenplay };
+  //   }, this.queueAutosave);
+  // },
 
   render: function() {
     return (
@@ -95,11 +85,9 @@ var ScreenplayEditor = React.createClass({
             style={ { background: "orange" } }>
           </span>
         </form>
-        <ScreenplaySectionList
+        <ScreenplaySection
           style={ { height: "90%" } }
-          screenplayId={this.state.screenplay.id}
-          sections={this.state.screenplay.sections}
-          onSectionChange={this.handleSectionChange} />
+          section={this.state.screenplay.sections[0]} />
       </div>
     );
   }
