@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html class="uk-height-viewport">
   <head>
-    <title><%= Rails.env.development? ? "DEV" : "Script it." %></title>
-    <%= favicon_link_tag "quill.png" %>
+    <title>Script it.</title>
+    <%= favicon_link_tag env_favicon %>
     <%= csrf_meta_tags %>
     <%= stylesheet_link_tag "application" %>
   </head>

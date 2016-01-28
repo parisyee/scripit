@@ -9,7 +9,7 @@ gem "envied"
 gem "jquery-rails"
 gem "multi_json"
 gem "pg"
-gem "react-rails"
+gem "react_on_rails", "~> 2.0.0"
 gem "responders"
 gem "roar-rails"
 gem "sass-rails", "~> 5.0"
@@ -39,8 +39,10 @@ group :test do
   gem "database_cleaner"
   gem "factory_girl_rails", "~> 4.0"
   gem "launchy"
+  gem "rspec_junit_formatter", "0.2.2"
 end
 
 source "https://rails-assets.org" do
   gem "rails-assets-uikit"
 end
+gem 'bootstrap-sass'

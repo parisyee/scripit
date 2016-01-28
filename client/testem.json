@@ -1,0 +1,18 @@
+{
+  "before_tests": "npm run build:test",
+  "framework": "mocha+chai",
+  "launch_in_dev": ["Chrome"],
+  "on_exit": "rm ./tests/tmp/*",
+  "routes": {
+    "/tests/index.html": "tests/index.html.mustache"
+  },
+  "src_files": [
+    "./app/bundles/**/*.jsx",
+    "./tests/bundles/**/*.jsx"
+  ],
+  "serve_files": [
+    "./tests/tmp/vendor-bundle.js",
+    "./tests/tmp/tests-bundle.js"
+  ],
+  "test_page": "./tests/index.html"
+}

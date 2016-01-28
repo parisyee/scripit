@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Tests</title>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <div id="mocha-fixtures"></div>
+
+    <span id="autosave-indicator"></span>
+
+    {{#serve_files}}
+      <script src="/{{src}}"></script>
+    {{/serve_files}}
+
+    <script src="/testem.js" integrity=""></script>
+  </body>
+</html>

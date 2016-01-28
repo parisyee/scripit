@@ -1,4 +1,6 @@
 machine:
+  node:
+    version: 5.5.0
   ruby:
     version: 2.3.0
   timezone:
@@ -10,7 +12,17 @@ machine:
     - >
       sudo apt-get update
       && sudo apt-get install nginx-light qt55webkit && sudo service nginx stop
+      && sudo apt-get install --only-upgrade google-chrome-stable
       && echo "source /opt/qt55/bin/qt55-env.sh" >> ~/.circlerc
+dependencies:
+  pre:
+    - npm install -g npm
+test:
+  override:
+    - RAILS_ENV=test bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o $CIRCLE_TEST_REPORTS/rspec/junit.xml
+  pre:
+    - mkdir -p $CIRCLE_TEST_REPORTS/client
+    - cd client && npm run build:client && npm run test:ci --silent > $CIRCLE_TEST_REPORTS/client/output.xml
 deployment:
   production:
     branch: master

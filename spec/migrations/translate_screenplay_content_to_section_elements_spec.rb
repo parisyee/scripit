@@ -1,11 +1,27 @@
 require "rails_helper"
 
-migration_file_name = Dir[Rails.root.join('db/migrate/*_translate_screenplay_content_to_section_elements.rb')].first
-require migration_file_name
+migration_file_1 = Dir[
+  Rails.root.join(
+    'db/migrate/*_translate_screenplay_content_to_section_elements.rb'
+  )
+].first
+migration_file_2 = Dir[
+  Rails.root.join(
+    'db/migrate/*_remove_content_from_screenplays.rb'
+  )
+].first
+require migration_file_1
+require migration_file_2
 
 RSpec.describe TranslateScreenplayContentToSectionElements do
   before do
+    RemoveContentFromScreenplays.new.down
     TranslateScreenplayContentToSectionElements.new.down
+  end
+
+  after do
+    RemoveContentFromScreenplays.new.up
+    Screenplay.reset_column_information
   end
 
   describe ".up" do
@@ -31,7 +47,8 @@ RSpec.describe TranslateScreenplayContentToSectionElements do
         }
       ].to_json
 
-      create(:screenplay, title: "Screenplay 1", content: content_json)
+      Screenplay.reset_column_information
+      Screenplay.create!(title: "Screenplay 1", content: content_json)
 
       expect(Section.count).to eq(0)
       expect(Element.count).to eq(0)
