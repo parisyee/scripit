@@ -22,7 +22,7 @@ test:
     - RAILS_ENV=test bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o $CIRCLE_TEST_REPORTS/rspec/junit.xml
   pre:
     - mkdir -p $CIRCLE_TEST_REPORTS/client
-    - cd client && npm run build:client && npm run test:ci --silent > $CIRCLE_TEST_REPORTS/client/output.xml
+    - cd client && npm run build && npm run test:ci --silent > $CIRCLE_TEST_REPORTS/client/output.xml
 deployment:
   production:
     branch: master

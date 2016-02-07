@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 const path = require("path");
-const config = require("./webpack.client.base.config");
+const config = require("./webpack.base.config");
 
 config.node = {
   constants: "empty",

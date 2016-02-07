@@ -4,13 +4,13 @@
 
 // NOTE: All style sheets handled by the asset pipeline in rails
 
-const webpack = require('webpack');
-const config = require('./webpack.client.base.config');
-const devBuild = process.env.NODE_ENV !== 'production';
+const webpack = require("webpack");
+const config = require("./webpack.base.config");
+const devBuild = process.env.NODE_ENV !== "production";
 
 config.output = {
-  filename: '[name]-bundle.js',
-  path: '../app/assets/javascripts/generated',
+  filename: "[name]-bundle.js",
+  path: "../app/assets/javascripts/generated",
 };
 
 // You can add entry points specific to rails here
@@ -18,18 +18,18 @@ config.entry["workspace-app"] = "./app/bundles/workspace/startup/client-registra
 
 // The es5-shim/sham is for capybara testing
 config.entry.vendor.unshift(
-  'es5-shim/es5-shim',
-  'es5-shim/es5-sham'
+  "es5-shim/es5-shim",
+  "es5-shim/es5-sham"
 );
 
 // jquery-ujs MUST GO AFTER jquery, so must use 'push'
-config.entry.vendor.push('jquery-ujs');
+config.entry.vendor.push("jquery-ujs");
 
 // See webpack.common.config for adding modules common to both the webpack dev server and rails
 config.module.loaders.push(
   {
     test: /\.jsx?$/,
-    loader: 'babel-loader',
+    loader: "babel-loader",
     exclude: /node_modules/,
   },
   {
