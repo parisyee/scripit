@@ -10,6 +10,12 @@ module Capabilities
       fill_in "screenplay[title]", with: title
     end
 
+    def delete_screenplay(title)
+      within "td", text: title do
+        click_link "X"
+      end
+    end
+
     def edit_scene_heading(content)
       # THERE MUST BE A BETTER WAY!
       execute_script(<<-JS)

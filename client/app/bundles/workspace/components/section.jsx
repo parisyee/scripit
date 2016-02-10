@@ -4,16 +4,31 @@ import _ from "lodash";
 
 export default class Section extends React.Component {
   static propTypes = {
-    section: PropTypes.object.isRequired
+    url: PropTypes.string.isRequired,
+    onTitleChange: PropTypes.func.isRequired
   };
 
   constructor(props, context) {
     super(props, context);
 
-    this.state = { section: props.section };
     this.AUTOSAVE_TIMER = null;
+    this.state = { section: {} };
 
-    _.bindAll(this, "handleChange");
+    _.bindAll(this, ["handleChange", "handleTitleChange"]);
+  };
+
+  componentDidMount() {
+    $.ajax({
+      url: this.props.url,
+      method: "GET",
+      dataType: "json",
+      success: ((data) => {
+        this.setState({section: data});
+      }).bind(this),
+      error: ((xhr, status, error) => {
+        console.log(error);
+      })
+    });
   };
 
   buildSection() {
@@ -24,10 +39,20 @@ export default class Section extends React.Component {
   };
 
   handleChange() {
-    const section = this.state.section;
-    section.title = this.refs.title.value;
-    section.notes = this.refs.notes.value;
-    this.setState({ section: section }, this.queueAutosave);
+    this.setState((oldState) => {
+      const section = oldState.section;
+      section.title = this.refs.title.value;
+      section.notes = this.refs.notes.value;
+
+      return { section: section };
+    }, () => {
+      this.queueAutosave();
+    });
+  };
+
+  handleTitleChange() {
+    this.props.onTitleChange(this.refs.title.value);
+    this.handleChange();
   };
 
   queueAutosave() {
@@ -47,7 +72,7 @@ export default class Section extends React.Component {
     $("#autosave-indicator").html("Saving Changes...");
 
     $.ajax({
-      url: this.props.section.url,
+      url: this.props.url,
       method: "PUT",
       data: { section: this.buildSection() },
       dataType: "json",
@@ -68,17 +93,17 @@ export default class Section extends React.Component {
 
   render() {
     return(
-      <div>
+      <div className="section">
         <input
           name="section[title]"
           ref="title"
-          onInput={this.handleChange}
-          defaultValue={this.state.section.title} />
+          onInput={this.handleTitleChange}
+          value={this.state.section.title} />
         <textarea
           name="section[notes]"
           ref="notes"
           onInput={this.handleChange}
-          defaultValue={this.state.section.notes}></textarea>
+          value={this.state.section.notes}></textarea>
       </div>
     );
   }

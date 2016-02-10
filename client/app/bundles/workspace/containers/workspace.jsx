@@ -7,6 +7,8 @@ export default class Workspace extends React.Component {
   };
 
   render() {
+    const screenplay = JSON.parse(this.props.bootstrapData);
+
     return (
       <div>
         <span
@@ -15,7 +17,10 @@ export default class Workspace extends React.Component {
           ref="autosaveIndicator"
           style={ { background: "orange" } }></span>
         <ScreenplayEditor
-          screenplay={JSON.parse(this.props.bootstrapData)} />
+          title={screenplay.title}
+          sections={screenplay.sections}
+          url={screenplay.url}
+          sectionsUrl={screenplay.sections_url} />
       </div>
     );
   }

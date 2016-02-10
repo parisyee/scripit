@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     namespace :v1 do
       resources :screenplays, only: [:update] do
-        resources :sections, only: [:create, :update, :destroy] do
+        resources :sections, only: [:create, :show, :update, :destroy] do
           resources :elements, only: [:create, :update, :destroy]
         end
       end

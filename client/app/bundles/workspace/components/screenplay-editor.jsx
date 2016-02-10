@@ -2,35 +2,51 @@ import React, { PropTypes } from "react";
 import $ from "jquery";
 import _ from "lodash";
 import Section from "./section";
+import SectionList from "./section-list";
 
 export default class ScreenplayEditor extends React.Component {
   static propTypes = {
-    screenplay: PropTypes.object.isRequired
+    title: PropTypes.string.isRequired,
+    sections: PropTypes.array.isRequired,
+    url: PropTypes.string.isRequired,
+    sectionsUrl: PropTypes.string.isRequired
   };
 
   constructor(props, context) {
     super(props, context);
 
     this.AUTOSAVE_TIMER = null;
-    this.state = { screenplay: this.props.screenplay };
+    this.state = {
+      title: this.props.title,
+      sections: this.props.sections,
+      sectionsUrl: this.props.sectionsUrl,
+      url: this.props.url,
+      currentSectionIndex: 0
+    };
 
-    _.bindAll(this, "handleChange");
+    _.bindAll(
+      this,
+      [
+        "handleChange",
+        "createSection",
+        "onSectionSelect",
+        "onSectionTitleChange"
+      ]
+    );
   };
 
   screenplayTitle() {
     return (
-      this.state.screenplay.title || "Untitled"
+      this.state.title || "Untitled"
     );
   };
 
   buildScreenplay() {
-    return { title: this.state.screenplay.title };
+    return { title: this.state.title };
   };
 
   handleChange() {
-    const screenplay = this.state.screenplay;
-    screenplay.title = this.refs.title.value;
-    this.setState({ screenplay: screenplay }, this.queueAutosave);
+    this.setState({ title: this.refs.title.value }, this.queueAutosave);
   };
 
   queueAutosave() {
@@ -50,7 +66,7 @@ export default class ScreenplayEditor extends React.Component {
     $("#autosave-indicator").html("Saving Changes...");
 
     $.ajax({
-      url: this.props.screenplay.url,
+      url: this.props.url,
       method: "PUT",
       data: { screenplay: this.buildScreenplay() },
       dataType: "json",
@@ -63,24 +79,75 @@ export default class ScreenplayEditor extends React.Component {
     });
   };
 
-  sectionNode() {
-    if (this.state.screenplay.sections.length > 0) {
-      return (
-        <Section section={this.state.screenplay.sections[0]} />
-      );
-    }
+  createSection() {
+    $.ajax({
+      url: this.props.sectionsUrl,
+      method: "POST",
+      data: {},
+      type: "json",
+      success: ((data) => {
+        this.setState((oldState) => {
+          const sections = oldState.sections;
+          sections.push(data);
+          const index = sections.length - 1;
+
+          return {
+            sections: sections,
+            currentSectionIndex: index
+          };
+        });
+      }).bind(this),
+      error: ((xhr, status, error) => {
+        console.log(error);
+      })
+    });
+  };
+
+  onSectionSelect(index) {
+    this.setState({ currentSectionIndex: index });
+  };
+
+  onSectionTitleChange(title) {
+    this.setState((oldState) => {
+      const sections = oldState.sections;
+      sections[this.state.currentSectionIndex].title = title;
+      return { sections: sections };
+    });
+  };
+
+  currentSectionUrl() {
+    return (
+      this.state.sections[this.state.currentSectionIndex].url
+    );
   };
 
   render() {
     return (
       <div className="screenplay-editor">
-        <input
-          className="uk-margin-left uk-width-7-10"
-          defaultValue={this.screenplayTitle()}
-          name="screenplay[title]"
-          onChange={this.handleChange}
-          ref="title" />
-        {this.sectionNode()}
+        <div>
+          <input
+            className="uk-margin-left uk-width-7-10"
+            defaultValue={this.screenplayTitle()}
+            name="screenplay[title]"
+            onChange={this.handleChange}
+            ref="title" />
+        </div>
+        <div>
+          <a
+            href="javascript:void()"
+            ref="newSectionButton"
+            onClick={this.createSection}>
+            New Section
+          </a>
+        </div>
+        <SectionList
+          currentSectionIndex={this.state.currentSectionIndex}
+          onSectionSelect={this.onSectionSelect}
+          sections={this.state.sections} />
+        <Section
+          key={this.currentSectionUrl()}
+          onTitleChange={this.onSectionTitleChange}
+          url={this.currentSectionUrl()} />
       </div>
     );
   };
