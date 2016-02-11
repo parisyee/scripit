@@ -5,25 +5,26 @@ import { expect } from "chai";
 import ScreenplayEditor from "bundles/workspace/components/screenplay-editor";
 
 describe("ScreenplayEditor", () => {
+  let server;
+
+  beforeEach(() => { server = sinon.fakeServer.create(); });
+  afterEach(() => { server.restore(); });
+
   describe("when 'New Section' button is clicked", () => {
-    let server;
-
-    beforeEach(() => { server = sinon.fakeServer.create(); });
-    afterEach(() => { server.restore(); });
-
     it("sends a POST to the provided 'sections_url', adds a new section to the" +
        " end of the sections array, and update currentSectionIndex to new member", () => {
       const component = ReactTestUtils.renderIntoDocument(
         <ScreenplayEditor
-          sections={[{ url: "/screenplay/1/sections/1" }]}
+          sections={[{ url: "/screenplays/1/sections/1" }]}
           title={"My Screenplay"}
           url={"/screenplay/1"}
           sectionsUrl={"/screenplays/1/sections"} />
       );
+      const componentElm = ReactDOM.findDOMNode(component);
 
       expect(component.state.sections.length).to.eql(1)
 
-      ReactTestUtils.Simulate.click(component.refs.newSectionButton);
+      ReactTestUtils.Simulate.click(componentElm.querySelector("a.create-section"));
 
       expect(server.requests[1].url).to.eql("/screenplays/1/sections");
       expect(server.requests[1].method).to.eql("POST");
@@ -42,8 +43,8 @@ describe("ScreenplayEditor", () => {
   describe("when new section is selected from SectionList", () => {
     it("updates the current section index to the position of the selected", () => {
       const sections = [
-        { title: "Screenplay 1", url: "/screenplay/1/sections/1" },
-        { title: "Screenplay 2", url: "/screenplay/1/sections/2" }
+        { title: "Screenplay 1", url: "/screenplays/1/sections/1" },
+        { title: "Screenplay 2", url: "/screenplays/1/sections/2" }
       ];
       const component = ReactTestUtils.renderIntoDocument(
         <ScreenplayEditor
@@ -63,16 +64,46 @@ describe("ScreenplayEditor", () => {
     });
   });
 
+  describe("when delete section button is clicked", () => {
+    it("sends a DELETE request to the currentSectionUrl and removes the section from the list", () => {
+      const sections = [
+        { title: "Screenplay 1", url: "/screenplays/1/sections/1" },
+        { title: "Screenplay 2", url: "/screenplays/1/sections/2" }
+      ];
+      const component = ReactTestUtils.renderIntoDocument(
+        <ScreenplayEditor
+          sections={sections}
+          title={"My Screenplay"}
+          url={"/screenplay/1"}
+          sectionsUrl={"/screenplays/1/sections"} />
+      );
+
+      const componentElm = ReactDOM.findDOMNode(component);
+
+      expect(
+        componentElm.querySelector("a.section-list-item.active").innerHTML
+      ).to.eql("Screenplay 1")
+
+      const deleteSectionButton = componentElm.querySelector("a.delete-section");
+      ReactTestUtils.Simulate.click(deleteSectionButton);
+
+      expect(server.requests[1].method).to.eql("DELETE");
+      expect(server.requests[1].url).to.eql("/screenplays/1/sections/1");
+
+      server.requests[1].respond(200, { "Content-Type": "application/json" }, "{}");
+
+      expect(
+        componentElm.querySelector("a.section-list-item.active").innerHTML
+      ).to.eql("Screenplay 2")
+      expect(component.state.sections.length).to.eql(1)
+    });
+  });
+
   describe("when title changes", () => {
-    let server;
-
-    before(() => { server = sinon.fakeServer.create(); });
-    after(() => { server.restore(); });
-
     it("queues the autosave timer and sends a PUT to the provided url", (done) => {
       const component = ReactTestUtils.renderIntoDocument(
         <ScreenplayEditor
-          sections={[{ url: "/screenplay/1/sections/1" }]}
+          sections={[{ url: "/screenplays/1/sections/1" }]}
           title={"My Screenplay"}
           url={"/screenplay/1"}
           sectionsUrl={"/screenplays/1/sections"} />

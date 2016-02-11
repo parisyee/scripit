@@ -25,14 +25,6 @@ module Capabilities
       JS
     end
 
-    def edit_section_title(title)
-      fill_in "section[title]", with: title
-    end
-
-    def edit_section_notes(notes)
-      fill_in "section[notes]", with: notes
-    end
-
     def has_waited_for_autosave?
       indicator = find("#autosave-indicator")
       Timeout::timeout(3) do

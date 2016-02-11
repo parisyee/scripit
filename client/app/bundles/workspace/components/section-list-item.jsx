@@ -4,6 +4,7 @@ import _ from "lodash";
 
 export default class SectionListItem extends React.Component {
   static propTypes = {
+    active: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
     onSectionSelect: PropTypes.func.isRequired,
     section: PropTypes.object.isRequired
@@ -19,6 +20,16 @@ export default class SectionListItem extends React.Component {
     this.props.onSectionSelect(this.props.index);
   };
 
+  listItemClasses() {
+    let names = "section-list-item";
+
+    if (this.props.active) {
+      names += " active";
+    }
+
+    return names;
+  };
+
   sectionTitle() {
     return (
       this.props.section.title || `Section ${this.props.index + 1}`
@@ -29,7 +40,7 @@ export default class SectionListItem extends React.Component {
     return(
       <a
         href="javascript:void()"
-        className="section-list-item"
+        className={this.listItemClasses()}
         onClick={this.handleSectionSelect}>
         {this.sectionTitle()}
       </a>

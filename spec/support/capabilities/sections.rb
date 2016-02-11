@@ -12,6 +12,25 @@ module Capabilities
       end
     end
 
+    def edit_section_title(title)
+      fill_in "section[title]", with: title
+    end
+
+    def edit_section_notes(notes)
+      fill_in "section[notes]", with: notes
+    end
+
+    def delete_section
+      click_link "Delete Section"
+      wait_for_ajax
+    end
+
+    def within_section
+      within ".section" do
+        yield
+      end
+    end
+
     def within_sidebar
       within ".section-list" do
         yield

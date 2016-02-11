@@ -22,6 +22,13 @@ module Api
         respond_with section, location: nil
       end
 
+      def destroy
+        section = screenplay.sections.find(params[:id])
+        section.destroy!
+
+        respond_with section, location: nil
+      end
+
       private
 
       def section_params

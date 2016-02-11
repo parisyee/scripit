@@ -27,8 +27,9 @@ export default class ScreenplayEditor extends React.Component {
     _.bindAll(
       this,
       [
-        "handleChange",
         "createSection",
+        "deleteSection",
+        "handleChange",
         "onSectionSelect",
         "onSectionTitleChange"
       ]
@@ -103,6 +104,25 @@ export default class ScreenplayEditor extends React.Component {
     });
   };
 
+  deleteSection() {
+    $.ajax({
+      url: this.currentSectionUrl(),
+      method: "DELETE",
+      type: "json",
+      success: ((data) => {
+        this.setState((oldState) => {
+          const sections = oldState.sections;
+          sections.splice(this.currentSectionIndex, 1);
+
+          return { sections: sections };
+        });
+      }).bind(this),
+      error: ((xhr, status, error) => {
+        console.log(error);
+      })
+    });
+  };
+
   onSectionSelect(index) {
     this.setState({ currentSectionIndex: index });
   };
@@ -134,10 +154,16 @@ export default class ScreenplayEditor extends React.Component {
         </div>
         <div>
           <a
+            className="create-section"
             href="javascript:void()"
-            ref="newSectionButton"
             onClick={this.createSection}>
             New Section
+          </a>
+          <a
+            className="delete-section"
+            href="javascript:void()"
+            onClick={this.deleteSection}>
+            Delete Section
           </a>
         </div>
         <SectionList
