@@ -28,7 +28,7 @@ export default class ScreenplayEditor extends React.Component {
       this,
       [
         "createSection",
-        "deleteSection",
+        "removeSection",
         "handleChange",
         "onSectionSelect",
         "onSectionTitleChange"
@@ -55,7 +55,7 @@ export default class ScreenplayEditor extends React.Component {
       clearTimeout(this.AUTOSAVE_TIMER);
     }
 
-    $("#autosave-indicator").html("Unsaved Changes");
+    $("#autosave-indicator").removeClass("saved").addClass("saving");
 
     this.AUTOSAVE_TIMER = setTimeout(function() {
       this.saveScreenplay();
@@ -64,18 +64,17 @@ export default class ScreenplayEditor extends React.Component {
   };
 
   saveScreenplay() {
-    $("#autosave-indicator").html("Saving Changes...");
-
     $.ajax({
       url: this.props.url,
       method: "PUT",
       data: { screenplay: this.buildScreenplay() },
       dataType: "json",
       success: ((data) => {
-        $("#autosave-indicator").html("Changes Saved");
+        $("#autosave-indicator").removeClass("saving").addClass("saved");
       }).bind(this),
       error: (xhr, status, err) => {
         console.log(err);
+        $("#autosave-indicator").removeClass("saving").addClass("error");
       }
     });
   };
@@ -104,25 +103,15 @@ export default class ScreenplayEditor extends React.Component {
     });
   };
 
-  deleteSection() {
-    $.ajax({
-      url: this.currentSectionUrl(),
-      method: "DELETE",
-      type: "json",
-      success: ((data) => {
-        this.setState((oldState) => {
-          let index = oldState.currentSectionIndex;
-          const sections = oldState.sections;
-          sections.splice(index, 1);
-          if (index >= sections.length) {
-            index = sections.length - 1;
-          }
-          return { sections: sections, currentSectionIndex: index };
-        });
-      }).bind(this),
-      error: ((xhr, status, error) => {
-        console.log(error);
-      })
+  removeSection() {
+    this.setState((oldState) => {
+      let index = oldState.currentSectionIndex;
+      const sections = oldState.sections;
+      sections.splice(index, 1);
+      if (index >= sections.length) {
+        index = sections.length - 1;
+      }
+      return { sections: sections, currentSectionIndex: index };
     });
   };
 
@@ -146,37 +135,46 @@ export default class ScreenplayEditor extends React.Component {
 
   render() {
     return (
-      <div className="screenplay-editor">
-        <div>
-          <input
-            className="uk-margin-left uk-width-7-10"
-            defaultValue={this.screenplayTitle()}
-            name="screenplay[title]"
-            onChange={this.handleChange}
-            ref="title" />
+      <div className="screenplay-editor uk-grid uk-grid-collapse uk-height-1-1">
+        <div className="sidebar uk-height-1-1">
+          <div className="screenplay-title">
+            <input
+              className=""
+              defaultValue={this.screenplayTitle()}
+              name="screenplay[title]"
+              onChange={this.handleChange}
+              ref="title" />
+          </div>
+          <SectionList
+            currentSectionIndex={this.state.currentSectionIndex}
+            onSectionSelect={this.onSectionSelect}
+            sections={this.state.sections} />
+          <div className="control-panel uk-grid uk-grid-collapse">
+            <a
+              title="Back to screenplays"
+              className="uk-width-1-4 uk-text-center"
+              href="/screenplays">
+              <i className="uk-icon-arrow-left"></i>
+            </a>
+            <span className="uk-width-2-4 uk-text-center">
+              <i className="uk-icon-save success" id="autosave-indicator"></i>
+            </span>
+            <a
+              title="Create new section"
+              className="create-section uk-width-1-4 uk-text-center"
+              href="javascript:void()"
+              onClick={this.createSection}>
+              <i className="uk-icon-plus"></i>
+            </a>
+          </div>
         </div>
-        <div>
-          <a
-            className="create-section"
-            href="javascript:void()"
-            onClick={this.createSection}>
-            New Section
-          </a>
-          <a
-            className="delete-section"
-            href="javascript:void()"
-            onClick={this.deleteSection}>
-            Delete Section
-          </a>
+        <div className="content-editor uk-heigth-1-1">
+          <Section
+            key={this.currentSectionUrl()}
+            onDelete={this.removeSection}
+            onTitleChange={this.onSectionTitleChange}
+            url={this.currentSectionUrl()} />
         </div>
-        <SectionList
-          currentSectionIndex={this.state.currentSectionIndex}
-          onSectionSelect={this.onSectionSelect}
-          sections={this.state.sections} />
-        <Section
-          key={this.currentSectionUrl()}
-          onTitleChange={this.onSectionTitleChange}
-          url={this.currentSectionUrl()} />
       </div>
     );
   };

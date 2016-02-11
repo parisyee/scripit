@@ -4,8 +4,9 @@ import _ from "lodash";
 
 export default class Section extends React.Component {
   static propTypes = {
-    url: PropTypes.string.isRequired,
-    onTitleChange: PropTypes.func.isRequired
+    onDelete: PropTypes.func.isRequired,
+    onTitleChange: PropTypes.func.isRequired,
+    url: PropTypes.string.isRequired
   };
 
   constructor(props, context) {
@@ -14,7 +15,7 @@ export default class Section extends React.Component {
     this.AUTOSAVE_TIMER = null;
     this.state = { section: {} };
 
-    _.bindAll(this, ["handleChange", "handleTitleChange"]);
+    _.bindAll(this, ["handleChange", "handleTitleChange", "deleteSection"]);
   };
 
   componentDidMount() {
@@ -60,7 +61,7 @@ export default class Section extends React.Component {
       clearTimeout(this.AUTOSAVE_TIMER);
     }
 
-    $("#autosave-indicator").html("Unsaved Changes");
+    $("#autosave-indicator").removeClass("saved").addClass("saving");
 
     this.AUTOSAVE_TIMER = setTimeout(function() {
       this.saveSection();
@@ -69,8 +70,6 @@ export default class Section extends React.Component {
   };
 
   saveSection() {
-    $("#autosave-indicator").html("Saving Changes...");
-
     $.ajax({
       url: this.props.url,
       method: "PUT",
@@ -83,11 +82,26 @@ export default class Section extends React.Component {
         );
       }),
       success: ((data) => {
-        $("#autosave-indicator").html("Changes Saved");
+        $("#autosave-indicator").removeClass("saving").addClass("saved");
       }).bind(this),
       error: (xhr, status, err) => {
         console.log(err);
+        $("#autosave-indicator").removeClass("saving").addClass("error");
       }
+    });
+  };
+
+  deleteSection() {
+    $.ajax({
+      url: this.props.url,
+      method: "DELETE",
+      type: "json",
+      success: ((data) => {
+        this.props.onDelete();
+      }).bind(this),
+      error: ((xhr, status, error) => {
+        console.log(error);
+      })
     });
   };
 
@@ -99,6 +113,12 @@ export default class Section extends React.Component {
           ref="title"
           onInput={this.handleTitleChange}
           value={this.state.section.title} />
+        <a
+          className="delete-section"
+          href="javascript:void()"
+          onClick={this.deleteSection}>
+          Delete Section
+        </a>
         <textarea
           name="section[notes]"
           ref="notes"

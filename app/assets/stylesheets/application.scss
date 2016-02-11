@@ -18,5 +18,9 @@
 // Account for differences between Rails and Webpack Sass code.
 $rails: true;
 
-@import "uikit/uikit"
+@import "uikit/uikit";
+
+@import "variables";
+@import "content_editor";
+@import "sidebar";
 

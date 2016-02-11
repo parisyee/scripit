@@ -10,12 +10,7 @@ export default class Workspace extends React.Component {
     const screenplay = JSON.parse(this.props.bootstrapData);
 
     return (
-      <div>
-        <span
-          className="uk-width-2-10 uk-margin-left"
-          id="autosave-indicator"
-          ref="autosaveIndicator"
-          style={ { background: "orange" } }></span>
+      <div className="uk-height-1-1">
         <ScreenplayEditor
           title={screenplay.title}
           sections={screenplay.sections}

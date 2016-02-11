@@ -1,0 +1,77 @@
+.control-panel {
+  height: 7%;
+  border-right: 3px solid $charcoal;
+
+  a, span {
+    display: block;
+    font-size: 30px;
+    padding-top: 10px;
+  }
+
+  i {
+    color: $white;
+  }
+
+  i.saved {
+    color: $success-color;
+  }
+  i.saving {
+    color: $warning-color;
+  }
+  i.error {
+    color: $danger-color;
+  }
+}
+
+.screenplay-title {
+  height: 6%;
+  background: $white;
+  position: relative;
+  border-right: 3px solid $charcoal;
+
+  input {
+    background: inherit;
+    border: none;
+    bottom: 0;
+    box-shadow: none;
+    display: block;
+    font-size: 20px;
+    margin-bottom: 3%;
+    margin-left: 1%;
+    outline: none;
+    position: absolute;
+    resize: none;
+    width: 95%;
+  }
+}
+
+.sidebar {
+  background: orange;
+  width: 22%;
+  background: $charcoal;
+}
+
+.section-list {
+  height: 86%;
+  overflow: scroll;
+  background: $white;
+  border-top: 1px solid $charcoal;
+}
+
+.section-list-item {
+  height: 30px;
+  border-bottom: 1px solid $charcoal;
+  display: block;
+  text-decoration: none !important;
+  color: #000000;
+  padding: 5%;
+  vertical-align: text-bottom;
+  border-right: 3px solid $charcoal;
+
+  &.active {
+    border-bottom: 3px solid $charcoal;
+    border-left: 3px solid $charcoal;
+    border-top: 3px solid $charcoal;
+    border-right: none;
+  }
+}

@@ -32,7 +32,7 @@ module Capabilities
     end
 
     def within_sidebar
-      within ".section-list" do
+      within ".sidebar" do
         yield
       end
     end

@@ -21,13 +21,13 @@ export default class SectionListItem extends React.Component {
   };
 
   listItemClasses() {
-    let names = "section-list-item";
+    const names = ["section-list-item"]; 
 
     if (this.props.active) {
-      names += " active";
+      names.push("active");
     }
 
-    return names;
+    return names.join(" ");
   };
 
   sectionTitle() {
