@@ -92,34 +92,46 @@ export default class Section extends React.Component {
   };
 
   deleteSection() {
-    $.ajax({
-      url: this.props.url,
-      method: "DELETE",
-      type: "json",
-      success: ((data) => {
-        this.props.onDelete();
-      }).bind(this),
-      error: ((xhr, status, error) => {
-        console.log(error);
-      })
-    });
+    const isConfirmed = confirm(
+      `Are you sure you want to delete ${this.state.section.title || 'Untitled'}?`
+    );
+    if (isConfirmed) {
+      $.ajax({
+        url: this.props.url,
+        method: "DELETE",
+        type: "json",
+        success: ((data) => {
+          this.props.onDelete();
+        }).bind(this),
+        error: ((xhr, status, error) => {
+          console.log(error);
+        })
+      });
+    }
   };
 
   render() {
     return(
-      <div className="section">
-        <input
-          name="section[title]"
-          ref="title"
-          onInput={this.handleTitleChange}
-          value={this.state.section.title} />
-        <a
-          className="delete-section"
-          href="javascript:void()"
-          onClick={this.deleteSection}>
-          Delete Section
-        </a>
+      <div className="section-editor uk-height-1-1">
+        <div className="section-title-bar">
+          <input
+            className="uk-margin-left"
+            name="section[title]"
+            ref="title"
+            placeholder="Untitled"
+            onInput={this.handleTitleChange}
+            value={this.state.section.title} />
+          <a
+            title="Delete Section"
+            className="delete-section uk-float-right uk-margin-right uk-margin-small-top"
+            href="javascript:void()"
+            onClick={this.deleteSection}>
+            <i className="uk-icon-trash"></i>
+          </a>
+        </div>
         <textarea
+          placeholder="notes..."
+          className="section-notes uk-margin-left"
           name="section[notes]"
           ref="notes"
           onInput={this.handleChange}

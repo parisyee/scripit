@@ -36,12 +36,6 @@ export default class ScreenplayEditor extends React.Component {
     );
   };
 
-  screenplayTitle() {
-    return (
-      this.state.title || "Untitled"
-    );
-  };
-
   buildScreenplay() {
     return { title: this.state.title };
   };
@@ -140,7 +134,8 @@ export default class ScreenplayEditor extends React.Component {
           <div className="screenplay-title">
             <input
               className=""
-              defaultValue={this.screenplayTitle()}
+              placeholder="Untitled"
+              value={this.state.title}
               name="screenplay[title]"
               onChange={this.handleChange}
               ref="title" />
@@ -168,13 +163,11 @@ export default class ScreenplayEditor extends React.Component {
             </a>
           </div>
         </div>
-        <div className="content-editor uk-heigth-1-1">
-          <Section
-            key={this.currentSectionUrl()}
-            onDelete={this.removeSection}
-            onTitleChange={this.onSectionTitleChange}
-            url={this.currentSectionUrl()} />
-        </div>
+        <Section
+          key={this.currentSectionUrl()}
+          onDelete={this.removeSection}
+          onTitleChange={this.onSectionTitleChange}
+          url={this.currentSectionUrl()} />
       </div>
     );
   };

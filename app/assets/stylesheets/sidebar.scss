@@ -1,6 +1,6 @@
 .control-panel {
-  height: 7%;
   border-right: 3px solid $charcoal;
+  height: 7%;
 
   a, span {
     display: block;
@@ -12,31 +12,32 @@
     color: $white;
   }
 
+  i.error {
+    color: $danger-color;
+  }
+
   i.saved {
     color: $success-color;
   }
+
   i.saving {
     color: $warning-color;
-  }
-  i.error {
-    color: $danger-color;
   }
 }
 
 .screenplay-title {
-  height: 6%;
-  background: $white;
-  position: relative;
   border-right: 3px solid $charcoal;
+  height: 6%;
+  position: relative;
 
   input {
     background: inherit;
     border: none;
-    bottom: 0;
+    bottom: 5px;
+    color: $white;
     box-shadow: none;
-    display: block;
+    display: inline-block;
     font-size: 20px;
-    margin-bottom: 3%;
     margin-left: 1%;
     outline: none;
     position: absolute;
@@ -46,32 +47,33 @@
 }
 
 .sidebar {
-  background: orange;
-  width: 22%;
   background: $charcoal;
+  width: 22%;
 }
 
 .section-list {
+  background: $white;
+  border-right: 3px solid $charcoal;
+  border-top: 1px solid $charcoal;
   height: 86%;
   overflow: scroll;
-  background: $white;
-  border-top: 1px solid $charcoal;
 }
 
 .section-list-item {
-  height: 30px;
-  border-bottom: 1px solid $charcoal;
+  border-bottom: 1px solid lightgrey;
+  color: $black;
   display: block;
-  text-decoration: none !important;
-  color: #000000;
+  height: 30px;
   padding: 5%;
+  text-decoration: none !important;
   vertical-align: text-bottom;
-  border-right: 3px solid $charcoal;
 
   &.active {
-    border-bottom: 3px solid $charcoal;
-    border-left: 3px solid $charcoal;
-    border-top: 3px solid $charcoal;
-    border-right: none;
+    background: $active-orange;
+  }
+
+  &:hover {
+   text-decoration: none;
+   color: $black;
   }
 }

@@ -1,0 +1,42 @@
+.section-editor {
+  background: $white;
+  position: relative;
+  width: 78%;
+}
+
+.section-title-bar {
+  height: 5%;
+  padding-bottom: 1%;
+  padding-top: 1%;
+
+  a {
+    color: $danger-color;
+    display: inline-block;
+    font-size: 20px;
+    width: 3%;
+  }
+
+  input {
+    background: inherit;
+    border: none;
+    bottom: 0;
+    box-shadow: none;
+    font-size: 26px;
+    outline: none;
+    width: 90%;
+  }
+}
+
+.section-notes {
+  background: inherit;
+  border: none;
+  bottom: 0;
+  box-shadow: none;
+  font-size: 16px;
+  height: 91%;
+  outline: none;
+  overflow: scroll;
+  position: absolute;
+  resize: none;
+  width: 96%;
+}
