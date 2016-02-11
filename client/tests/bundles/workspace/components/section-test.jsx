@@ -88,10 +88,9 @@ describe("Section", () => {
 
     describe("when title changes", () => {
       it("calls the onTitleChange callback with the new value", () => {
-        const section = { url: "/screenplays/1/sections/1" };
         const onTitleChange = sinon.spy();
         const component = ReactTestUtils.renderIntoDocument(
-          <Section section={section} onTitleChange={onTitleChange} />
+          <Section url={"/screenplays/1/sections/1"} onTitleChange={onTitleChange} />
         );
         server.requests[0].respond(
           200,

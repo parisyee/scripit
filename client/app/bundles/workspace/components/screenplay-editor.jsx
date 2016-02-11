@@ -111,10 +111,13 @@ export default class ScreenplayEditor extends React.Component {
       type: "json",
       success: ((data) => {
         this.setState((oldState) => {
+          let index = oldState.currentSectionIndex;
           const sections = oldState.sections;
-          sections.splice(this.currentSectionIndex, 1);
-
-          return { sections: sections };
+          sections.splice(index, 1);
+          if (index >= sections.length) {
+            index = sections.length - 1;
+          }
+          return { sections: sections, currentSectionIndex: index };
         });
       }).bind(this),
       error: ((xhr, status, error) => {

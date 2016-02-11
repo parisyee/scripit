@@ -52,7 +52,11 @@ RSpec.describe "Managing sections", :js, type: :feature do
         expect(ux).to have_field "section[notes]", with: "This is the first part of the movie"
       end
       ux.within_sidebar do
-        expect(ux).to have_link "Introduction"
+        expect(ux).not_to have_link "Climax"
+      end
+      ux.reload_page
+      ux.within_sidebar do
+        expect(ux).not_to have_link "Climax"
       end
     end
   end

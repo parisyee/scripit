@@ -14,7 +14,6 @@ module BehaviroDSL
     metadata[:full_description] = [metadata[:example_group][:full_description]].
       concat(metadata[:description_args]).
       join(" ")
-
   end
 
   def metadata
