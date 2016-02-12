@@ -3,4 +3,6 @@ class Section < ActiveRecord::Base
   has_many :elements, dependent: :destroy
 
   acts_as_list scope: :screenplay, top_of_list: 0
+
+  default_scope { order("position") }
 end
