@@ -2,7 +2,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import ReactTestUtils from "react-addons-test-utils";
 import { expect } from "chai";
-import Section from "bundles/workspace/components/section";
+import SectionEditor from "bundles/workspace/components/section-editor";
 
 describe("Section", () => {
   let server;
@@ -12,9 +12,13 @@ describe("Section", () => {
 
   it("fetches the section data from the provided url" +
      " and displays the title and notes", () => {
+    const onDelete = sinon.spy();
     const onTitleChange = sinon.spy();
     const component = ReactTestUtils.renderIntoDocument(
-      <Section url={"/screenplays/1/sections/1"} onTitleChange={onTitleChange} />
+      <SectionEditor
+      onDelete={onDelete}
+      onTitleChange={onTitleChange}
+      url={"/screenplays/1/sections/1"} />
     );
 
     expect(server.requests[0].url).to.eql("/screenplays/1/sections/1");
@@ -42,9 +46,13 @@ describe("Section", () => {
 
   describe("when details change", () => {
     it("queues the autosave timer and sends a PUT to the provided url", (done) => {
+      const onDelete = sinon.spy();
       const onTitleChange = sinon.spy();
       const component = ReactTestUtils.renderIntoDocument(
-        <Section url={"/screenplays/1/sections/1"} onTitleChange={onTitleChange} />
+        <SectionEditor
+        onDelete={onDelete}
+        onTitleChange={onTitleChange}
+        url={"/screenplays/1/sections/1"} />
       );
       server.requests[0].respond(
         200,
@@ -62,13 +70,13 @@ describe("Section", () => {
       ReactTestUtils.Simulate.input(component.refs.notes);
 
       expect(
-        document.getElementById("autosave-indicator").innerHTML
-      ).to.contain("Unsaved Changes");
+        document.getElementById("autosave-indicator").className
+      ).to.contain("saving");
+      expect(
+        document.getElementById("autosave-indicator").className
+      ).to.not.contain("saved");
 
       window.setTimeout(() => {
-        expect(
-          document.getElementById("autosave-indicator").innerHTML
-        ).to.contain("Saving Changes");
         expect(server.requests[1].url).to.eql("/screenplays/1/sections/1");
         expect(server.requests[1].method).to.eql("PUT");
         expect(server.requests[1].requestBody).to.contain("Inciting+incident");
@@ -79,18 +87,24 @@ describe("Section", () => {
         server.requests[1].respond(200, { "Content-Type": "application/json" }, "{}");
 
         expect(
-          document.getElementById("autosave-indicator").innerHTML
-        ).to.contain("Changes Saved");
-
+          document.getElementById("autosave-indicator").className
+        ).to.contain("saved");
+        expect(
+          document.getElementById("autosave-indicator").className
+        ).to.not.contain("saving");
         done();
       }, 1750);
     });
 
     describe("when title changes", () => {
       it("calls the onTitleChange callback with the new value", () => {
+        const onDelete = sinon.spy();
         const onTitleChange = sinon.spy();
         const component = ReactTestUtils.renderIntoDocument(
-          <Section url={"/screenplays/1/sections/1"} onTitleChange={onTitleChange} />
+          <SectionEditor
+            onDelete={onDelete}
+            onTitleChange={onTitleChange}
+            url={"/screenplays/1/sections/1"} />
         );
         server.requests[0].respond(
           200,
@@ -107,6 +121,42 @@ describe("Section", () => {
 
         expect(onTitleChange).to.have.been.calledWith("Inciting incident");
       });
+    });
+  });
+
+  describe("when delete section button is clicked", () => {
+    before(() => { sinon.stub(window, "confirm").returns(true) });
+    after(() => { window.confirm.restore() });
+
+    it("sends a DELETE request to the currentSectionUrl and removes the section from the list", () => {
+      const onDelete = sinon.spy();
+      const onTitleChange = sinon.spy();
+      const component = ReactTestUtils.renderIntoDocument(
+        <SectionEditor
+          onDelete={onDelete}
+          onTitleChange={onTitleChange}
+          url={"/screenplays/1/sections/1"} />
+      );
+      server.requests[0].respond(
+        200,
+        { "Content-Type": "application/json" },
+        JSON.stringify({
+          id:  1,
+          title: "Introduction",
+          notes: "The story begins",
+          url: "/screenplays/1/sections/1"
+        })
+      );
+      const componentElm = ReactDOM.findDOMNode(component);
+      const deleteSectionButton = componentElm.querySelector("a.delete-section");
+      ReactTestUtils.Simulate.click(deleteSectionButton);
+
+      expect(server.requests[1].method).to.eql("DELETE");
+      expect(server.requests[1].url).to.eql("/screenplays/1/sections/1");
+
+      server.requests[1].respond(200, { "Content-Type": "application/json" }, "{}");
+
+      expect(onDelete).to.have.been.called;
     });
   });
 });

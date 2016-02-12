@@ -64,64 +64,6 @@ describe("ScreenplayEditor", () => {
     });
   });
 
-  describe("when delete section button is clicked", () => {
-    it("sends a DELETE request to the currentSectionUrl and removes the section from the list", () => {
-      const sections = [
-        { title: "Screenplay 1", url: "/screenplays/1/sections/1" },
-        { title: "Screenplay 2", url: "/screenplays/1/sections/2" },
-        { title: "Screenplay 3", url: "/screenplays/1/sections/3" },
-        { title: "Screenplay 4", url: "/screenplays/1/sections/4" },
-        { title: "Screenplay 5", url: "/screenplays/1/sections/5" }
-      ];
-      const component = ReactTestUtils.renderIntoDocument(
-        <ScreenplayEditor
-          sections={sections}
-          title={"My Screenplay"}
-          url={"/screenplays/1"}
-          sectionsUrl={"/screenplays/1/sections"} />
-      );
-
-      const componentElm = ReactDOM.findDOMNode(component);
-
-      expect(
-        componentElm.querySelector("a.section-list-item.active").innerHTML
-      ).to.eql("Screenplay 1")
-
-      const deleteSectionButton = componentElm.querySelector("a.delete-section");
-      ReactTestUtils.Simulate.click(deleteSectionButton);
-
-      expect(server.requests[1].method).to.eql("DELETE");
-      expect(server.requests[1].url).to.eql("/screenplays/1/sections/1");
-
-      server.requests[server.requests.length - 1].respond(200, { "Content-Type": "application/json" }, "{}");
-
-      expect(
-        componentElm.querySelector("a.section-list-item.active").innerHTML
-      ).to.eql("Screenplay 2")
-      expect(component.state.sections.length).to.eql(4)
-
-      const lastSectionLink = componentElm.querySelectorAll("a.section-list-item")[3];
-      ReactTestUtils.Simulate.click(lastSectionLink);
-      ReactTestUtils.Simulate.click(deleteSectionButton);
-      server.requests[server.requests.length - 1].respond(200, { "Content-Type": "application/json" }, "{}");
-
-      expect(
-        componentElm.querySelector("a.section-list-item.active").innerHTML
-      ).to.eql("Screenplay 4")
-      expect(component.state.sections.length).to.eql(3)
-
-      const middleSectionLink = componentElm.querySelectorAll("a.section-list-item")[1];
-      ReactTestUtils.Simulate.click(middleSectionLink);
-      ReactTestUtils.Simulate.click(deleteSectionButton);
-      server.requests[server.requests.length - 1].respond(200, { "Content-Type": "application/json" }, "{}");
-
-      expect(
-        componentElm.querySelector("a.section-list-item.active").innerHTML
-      ).to.eql("Screenplay 4")
-      expect(component.state.sections.length).to.eql(2)
-    });
-  });
-
   describe("when title changes", () => {
     it("queues the autosave timer and sends a PUT to the provided url", (done) => {
       const component = ReactTestUtils.renderIntoDocument(
@@ -140,23 +82,24 @@ describe("ScreenplayEditor", () => {
       ReactTestUtils.Simulate.change(input);
 
       expect(
-        document.getElementById("autosave-indicator").innerHTML
-      ).to.contain("Unsaved Changes");
+        document.getElementById("autosave-indicator").className
+      ).to.contain("saving");
+      expect(
+        document.getElementById("autosave-indicator").className
+      ).to.not.contain("saved");
 
       window.setTimeout(() => {
-        expect(
-          document.getElementById("autosave-indicator").innerHTML
-        ).to.contain("Saving Changes");
-
         expect(server.requests[1].method).to.eql("PUT");
         expect(server.requests[1].url).to.eql("/screenplays/1");
 
         server.requests[1].respond(200, { "Content-Type": "application/json" }, "{}");
 
         expect(
-          document.getElementById("autosave-indicator").innerHTML
-        ).to.contain("Changes Saved");
-
+          document.getElementById("autosave-indicator").className
+        ).to.contain("saved");
+        expect(
+          document.getElementById("autosave-indicator").className
+        ).to.not.contain("saving");
         done();
       }, 1750);
     });

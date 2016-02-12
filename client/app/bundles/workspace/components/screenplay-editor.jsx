@@ -1,7 +1,7 @@
 import React, { PropTypes } from "react";
 import $ from "jquery";
 import _ from "lodash";
-import Section from "./section";
+import SectionEditor from "./section-editor";
 import SectionList from "./section-list";
 
 export default class ScreenplayEditor extends React.Component {
@@ -127,6 +127,20 @@ export default class ScreenplayEditor extends React.Component {
     );
   };
 
+  sectionEditorNode() {
+    if (this.state.sections.length > 0) {
+      return (
+        <SectionEditor
+          key={this.currentSectionUrl()}
+          onDelete={this.removeSection}
+          onTitleChange={this.onSectionTitleChange}
+          url={this.currentSectionUrl()} />
+      );
+    } else {
+      return "Add a section";
+    }
+  };
+
   render() {
     return (
       <div className="screenplay-editor uk-grid uk-grid-collapse uk-height-1-1">
@@ -152,7 +166,7 @@ export default class ScreenplayEditor extends React.Component {
               <i className="uk-icon-arrow-left"></i>
             </a>
             <span className="uk-width-2-4 uk-text-center">
-              <i className="uk-icon-save success" id="autosave-indicator"></i>
+              <i className="uk-icon-save saved" id="autosave-indicator"></i>
             </span>
             <a
               title="Create new section"
@@ -163,11 +177,7 @@ export default class ScreenplayEditor extends React.Component {
             </a>
           </div>
         </div>
-        <Section
-          key={this.currentSectionUrl()}
-          onDelete={this.removeSection}
-          onTitleChange={this.onSectionTitleChange}
-          url={this.currentSectionUrl()} />
+        {this.sectionEditorNode()}
       </div>
     );
   };

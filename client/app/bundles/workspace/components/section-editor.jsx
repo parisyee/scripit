@@ -2,7 +2,7 @@ import React, { PropTypes } from "react";
 import $ from "jquery";
 import _ from "lodash";
 
-export default class Section extends React.Component {
+export default class SectionEditor extends React.Component {
   static propTypes = {
     onDelete: PropTypes.func.isRequired,
     onTitleChange: PropTypes.func.isRequired,
@@ -92,7 +92,7 @@ export default class Section extends React.Component {
   };
 
   deleteSection() {
-    const isConfirmed = confirm(
+    const isConfirmed = window.confirm(
       `Are you sure you want to delete ${this.state.section.title || 'Untitled'}?`
     );
     if (isConfirmed) {
@@ -122,7 +122,7 @@ export default class Section extends React.Component {
             onInput={this.handleTitleChange}
             value={this.state.section.title} />
           <a
-            title="Delete Section"
+            title="Delete section"
             className="delete-section uk-float-right uk-margin-right uk-margin-small-top"
             href="javascript:void()"
             onClick={this.deleteSection}>

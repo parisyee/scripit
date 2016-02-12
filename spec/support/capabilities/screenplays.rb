@@ -28,7 +28,7 @@ module Capabilities
     def has_waited_for_autosave?
       indicator = find("#autosave-indicator")
       Timeout::timeout(3) do
-        loop until indicator.text == "Changes Saved"
+        loop until indicator[:class].include?("saved")
       end
     end
 

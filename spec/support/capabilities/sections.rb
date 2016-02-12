@@ -1,7 +1,7 @@
 module Capabilities
   module Sections
     def add_new_section
-      click_link "New Section"
+      click_link "Create new section"
       wait_for_ajax
     end
 
@@ -21,12 +21,12 @@ module Capabilities
     end
 
     def delete_section
-      click_link "Delete Section"
+      click_link "Delete section"
       wait_for_ajax
     end
 
     def within_section
-      within ".section" do
+      within ".section-editor" do
         yield
       end
     end
