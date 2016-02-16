@@ -4,7 +4,7 @@ import ReactTestUtils from "react-addons-test-utils";
 import { expect } from "chai";
 import SectionEditor from "bundles/workspace/components/section-editor";
 
-describe("Section", () => {
+describe("SectionEditor", () => {
   let server;
 
   beforeEach(() => { server = sinon.fakeServer.create(); });
@@ -13,12 +13,15 @@ describe("Section", () => {
   it("fetches the section data from the provided url" +
      " and displays the title and notes", () => {
     const onDelete = sinon.spy();
+    const onPositionChange = sinon.spy();
     const onTitleChange = sinon.spy();
     const component = ReactTestUtils.renderIntoDocument(
       <SectionEditor
-      onDelete={onDelete}
-      onTitleChange={onTitleChange}
-      url={"/screenplays/1/sections/1"} />
+        onDelete={onDelete}
+        onPositionChange={onPositionChange}
+        onTitleChange={onTitleChange}
+        totalSections={2}
+        url={"/screenplays/1/sections/1"} />
     );
 
     expect(server.requests[0].url).to.eql("/screenplays/1/sections/1");
@@ -47,12 +50,15 @@ describe("Section", () => {
   describe("when details change", () => {
     it("queues the autosave timer and sends a PUT to the provided url", (done) => {
       const onDelete = sinon.spy();
+      const onPositionChange = sinon.spy();
       const onTitleChange = sinon.spy();
       const component = ReactTestUtils.renderIntoDocument(
         <SectionEditor
-        onDelete={onDelete}
-        onTitleChange={onTitleChange}
-        url={"/screenplays/1/sections/1"} />
+          onDelete={onDelete}
+          onPositionChange={onPositionChange}
+          onTitleChange={onTitleChange}
+          totalSections={2}
+          url={"/screenplays/1/sections/1"} />
       );
       server.requests[0].respond(
         200,
@@ -99,11 +105,14 @@ describe("Section", () => {
     describe("when title changes", () => {
       it("calls the onTitleChange callback with the new value", () => {
         const onDelete = sinon.spy();
+        const onPositionChange = sinon.spy();
         const onTitleChange = sinon.spy();
         const component = ReactTestUtils.renderIntoDocument(
           <SectionEditor
             onDelete={onDelete}
+            onPositionChange={onPositionChange}
             onTitleChange={onTitleChange}
+            totalSections={2}
             url={"/screenplays/1/sections/1"} />
         );
         server.requests[0].respond(
@@ -122,6 +131,45 @@ describe("Section", () => {
         expect(onTitleChange).to.have.been.calledWith("Inciting incident");
       });
     });
+
+    describe("when position changes", () => {
+      it("saves the new position and calls the onPositionChange callback", () => {
+        const onDelete = sinon.spy();
+        const onPositionChange = sinon.spy();
+        const onTitleChange = sinon.spy();
+        const component = ReactTestUtils.renderIntoDocument(
+          <SectionEditor
+            onDelete={onDelete}
+            onPositionChange={onPositionChange}
+            onTitleChange={onTitleChange}
+            totalSections={2}
+            url={"/screenplays/1/sections/1"} />
+        );
+        server.requests[0].respond(
+          200,
+          { "Content-Type": "application/json" },
+          JSON.stringify({
+            id:  1,
+            notes: "The story begins",
+            position: 0,
+            title: "Introduction",
+            url: "/screenplays/1/sections/1"
+          })
+        );
+
+        const selectElm = ReactDOM.findDOMNode(component.refs.position);
+        selectElm.value = "2";
+        ReactTestUtils.Simulate.change(component.refs.position);
+
+        expect(server.requests[1].url).to.eql("/screenplays/1/sections/1");
+        expect(server.requests[1].method).to.eql("PUT");
+        expect(server.requests[1].requestBody).to.contain("section%5Bposition%5D=2");
+
+        server.requests[1].respond(200, { "Content-Type": "application/json" }, "{}");
+
+        expect(onPositionChange).to.have.been.calledWith(2);
+      });
+    })
   });
 
   describe("when delete section button is clicked", () => {
@@ -133,9 +181,9 @@ describe("Section", () => {
       const onTitleChange = sinon.spy();
       const component = ReactTestUtils.renderIntoDocument(
         <SectionEditor
-          onDelete={onDelete}
-          onTitleChange={onTitleChange}
-          url={"/screenplays/1/sections/1"} />
+        onDelete={onDelete}
+        onTitleChange={onTitleChange}
+        url={"/screenplays/1/sections/1"} />
       );
       server.requests[0].respond(
         200,

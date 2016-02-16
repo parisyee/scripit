@@ -12,12 +12,22 @@ module Capabilities
       end
     end
 
+    def change_section_position(position)
+      within_section do
+        select position, from: "section[position]"
+      end
+    end
+
     def edit_section_title(title)
-      fill_in "section[title]", with: title
+      within_section do
+        fill_in "section[title]", with: title
+      end
     end
 
     def edit_section_notes(notes)
-      fill_in "section[notes]", with: notes
+      within_section do
+        fill_in "section[notes]", with: notes
+      end
     end
 
     def delete_section

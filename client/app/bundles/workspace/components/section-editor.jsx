@@ -5,7 +5,9 @@ import _ from "lodash";
 export default class SectionEditor extends React.Component {
   static propTypes = {
     onDelete: PropTypes.func.isRequired,
+    onPositionChange: PropTypes.func.isRequired,
     onTitleChange: PropTypes.func.isRequired,
+    totalSections: PropTypes.number.isRequired,
     url: PropTypes.string.isRequired
   };
 
@@ -15,7 +17,15 @@ export default class SectionEditor extends React.Component {
     this.AUTOSAVE_TIMER = null;
     this.state = { section: {} };
 
-    _.bindAll(this, ["handleChange", "handleTitleChange", "deleteSection"]);
+    _.bindAll(
+      this,
+      [
+        "handleChange",
+        "handlePositionChange",
+        "handleTitleChange",
+        "deleteSection"
+      ]
+    );
   };
 
   componentDidMount() {
@@ -34,8 +44,9 @@ export default class SectionEditor extends React.Component {
 
   buildSection() {
     return {
-      title: this.state.section.title,
-      notes: this.state.section.notes
+      notes: this.state.section.notes,
+      position: this.state.section.position,
+      title: this.state.section.title
     };
   };
 
@@ -69,7 +80,7 @@ export default class SectionEditor extends React.Component {
     }.bind(this), 1750);
   };
 
-  saveSection() {
+  saveSection(successCallback) {
     $.ajax({
       url: this.props.url,
       method: "PUT",
@@ -83,6 +94,7 @@ export default class SectionEditor extends React.Component {
       }),
       success: ((data) => {
         $("#autosave-indicator").removeClass("saving").addClass("saved");
+        if (successCallback) { successCallback() }
       }).bind(this),
       error: (xhr, status, err) => {
         console.log(err);
@@ -110,6 +122,36 @@ export default class SectionEditor extends React.Component {
     }
   };
 
+  handlePositionChange() {
+    const position = parseInt(this.refs.position.value);
+    this.props.onPositionChange(position);
+    this.setState((oldState) => {
+      const section = oldState.section;
+      section.position = position;
+      return { section: section };
+    }, this.saveSection);
+  };
+
+  positionSelectNode() {
+    const optionNodes = [...Array(this.props.totalSections).keys()].map((i) => {
+      const index = i + 1;
+      return (<option value={index}>{index}</option>);
+    });
+
+    return (
+      <span className="uk-form">
+        <select
+          className="section-position"
+          name="section[position]"
+          ref="position"
+          value={this.state.section.position}
+          onChange={this.handlePositionChange}>
+          {optionNodes}
+        </select>
+      </span>
+    );
+  };
+
   render() {
     return(
       <div className="section-editor uk-height-1-1">
@@ -121,9 +163,10 @@ export default class SectionEditor extends React.Component {
             placeholder="Untitled"
             onInput={this.handleTitleChange}
             value={this.state.section.title} />
+          {this.positionSelectNode()}
           <a
             title="Delete section"
-            className="delete-section uk-float-right uk-margin-right uk-margin-small-top"
+            className="delete-section uk-float-right uk-margin-right"
             href="javascript:void()"
             onClick={this.deleteSection}>
             <i className="uk-icon-trash"></i>

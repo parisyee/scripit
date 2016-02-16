@@ -29,8 +29,7 @@ RSpec.describe "Managing sections", :js, type: :feature do
       ux.has_waited_for_autosave?
 
       ux.within_sidebar do
-        expect(ux).to have_link "Introduction"
-        expect(ux).to have_link "Climax"
+        expect(ux).to have_section_order ["Introduction", "Climax"]
       end
 
       ux.edit_section_notes("Shit goes down")
@@ -42,6 +41,15 @@ RSpec.describe "Managing sections", :js, type: :feature do
         expect(ux).to have_field "section[title]", with: "Climax"
         expect(ux).to have_field "section[notes]", with: "Shit goes down"
       end
+    end
+
+    behavior "reordering sections" do
+      ux.change_section_position("1")
+      ux.has_waited_for_autosave?
+
+      expect(ux).to have_section_order ["Climax", "Introduction"]
+      ux.reload_page
+      expect(ux).to have_section_order ["Climax", "Introduction"]
     end
 
     # I think this is broken from adding the confim popup

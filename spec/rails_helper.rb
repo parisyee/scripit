@@ -7,6 +7,7 @@ require "spec_helper"
 require "rspec/rails"
 require "support/capybara"
 require "support/behavior"
+require "support/matchers"
 Dir[Rails.root.join("/support/helpers/*.rb")].each { |file| require file }
 
 # Requires supporting ruby files with custom matchers and macros, etc, in

@@ -64,6 +64,44 @@ describe("ScreenplayEditor", () => {
     });
   });
 
+  describe("when currentSection position changes", () => {
+    it("inserts the current section at the new index", () => {
+      const sections = [
+        { url: "/screenplays/1/sections/1" },
+        { url: "/screenplays/1/sections/2" },
+        { url: "/screenplays/1/sections/3" }
+      ];
+      const component = ReactTestUtils.renderIntoDocument(
+        <ScreenplayEditor
+          sections={sections}
+          title={"My Screenplay"}
+          url={"/screenplays/1"}
+          sectionsUrl={"/screenplays/1/sections"} />
+      );
+      server.requests[0].respond(
+        200,
+        { "Content-Type": "application/json" },
+        JSON.stringify({
+          id:  1,
+          notes: "The story begins",
+          position: 0,
+          title: "Introduction",
+          url: "/screenplays/1/sections/1"
+        })
+      );
+      const componentElm = ReactDOM.findDOMNode(component);
+      const sectionPositionSelect = componentElm.querySelector(".section-position");
+      sectionPositionSelect.value = "2";
+      ReactTestUtils.Simulate.change(sectionPositionSelect);
+
+      expect(component.state.sections).to.eql([
+        { url: "/screenplays/1/sections/2" },
+        { url: "/screenplays/1/sections/1" },
+        { url: "/screenplays/1/sections/3" }
+      ]);
+    });
+  });
+
   describe("when title changes", () => {
     it("queues the autosave timer and sends a PUT to the provided url", (done) => {
       const component = ReactTestUtils.renderIntoDocument(

@@ -32,7 +32,7 @@ module Api
       private
 
       def section_params
-        params.require(:section).permit(:title, :notes)
+        params.require(:section).permit(:notes, :position, :title)
       end
 
       def screenplay

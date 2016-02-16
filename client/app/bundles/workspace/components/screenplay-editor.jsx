@@ -28,10 +28,11 @@ export default class ScreenplayEditor extends React.Component {
       this,
       [
         "createSection",
-        "removeSection",
         "handleChange",
+        "onSectionPositionChange",
         "onSectionSelect",
-        "onSectionTitleChange"
+        "onSectionTitleChange",
+        "removeSection"
       ]
     );
   };
@@ -113,6 +114,18 @@ export default class ScreenplayEditor extends React.Component {
     this.setState({ currentSectionIndex: index });
   };
 
+  onSectionPositionChange(newPosition) {
+    const newIndex = newPosition - 1;
+    this.setState((oldState) => {
+      const sections = oldState.sections;
+      const currentSection = sections.splice(oldState.currentSectionIndex, 1)[0];
+      sections.splice(newIndex, 0, currentSection);
+
+      return { sections: sections, currentSectionIndex: newIndex };
+    });
+
+  };
+
   onSectionTitleChange(title) {
     this.setState((oldState) => {
       const sections = oldState.sections;
@@ -133,7 +146,9 @@ export default class ScreenplayEditor extends React.Component {
         <SectionEditor
           key={this.currentSectionUrl()}
           onDelete={this.removeSection}
+          onPositionChange={this.onSectionPositionChange}
           onTitleChange={this.onSectionTitleChange}
+          totalSections={this.state.sections.length}
           url={this.currentSectionUrl()} />
       );
     } else {
