@@ -5,23 +5,31 @@ require "support/capabilities/screenplays"
 RSpec.describe "Managing screenplays", :js, type: :feature do
   scenario do
     ux = Experience.new.extend(Capabilities::Screenplays)
-    create(:screenplay, title: "Monsters Inc")
 
-    ux.visit_screenplays
-    expect(ux).to have_link "Monsters Inc"
+    behavior "writer creates a screenplay" do
+      ux.visit_screenplays
+      ux.add_screenplay("Monsters Inc")
+      ux.reload_page
 
-    ux.add_screenplay("Terminator X")
-    ux.has_waited_for_autosave?
-    ux.reload_page
+      expect(ux).to have_field "screenplay[title]", with: "Monsters Inc"
 
-    ux.within ".screenplay-editor" do
-      expect(ux).to have_field "screenplay[title]", with: "Terminator X"
+      ux.visit_screenplays
+
+      expect(ux).to have_link "Monsters Inc"
     end
 
-    ux.visit_screenplays
-    expect(ux).to have_link "Terminator X"
+    behavior "writer edits a screenplay" do
+      ux.navigate_to_screenplay("Monsters Inc")
+      ux.edit_screenplay_title("Terminator II")
+      ux.visit_screenplays
 
-    ux.delete_screenplay("Terminator X")
-    expect(ux).not_to have_content("Terminator X")
+      expect(ux).to have_link "Terminator II"
+    end
+
+    behavior "writer deletes screenplay" do
+      ux.delete_screenplay("Terminator II")
+
+      expect(ux).not_to have_content("Terminator II")
+    end
   end
 end

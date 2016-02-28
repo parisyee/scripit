@@ -4,25 +4,26 @@ module Capabilities
       visit "/"
     end
 
+    def navigate_to_screenplay(title)
+      visit_screenplays
+      click_link title
+    end
+
     def add_screenplay(title)
       click_button "New Screenplay"
       wait_for_screenplay_editor
+      edit_screenplay_title(title)
+    end
+
+    def edit_screenplay_title(title)
       fill_in "screenplay[title]", with: title
+      has_waited_for_autosave?
     end
 
     def delete_screenplay(title)
-      within "td", text: title do
-        click_link "X"
+      within "tr.screenplay", text: title do
+        click_link "Delete screenplay"
       end
-    end
-
-    def edit_scene_heading(content)
-      # THERE MUST BE A BETTER WAY!
-      execute_script(<<-JS)
-      var el = $("#heading-0-hidden-input");
-      el.val("#{content}");
-      el.trigger("input");
-      JS
     end
 
     def has_waited_for_autosave?

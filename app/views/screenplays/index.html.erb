@@ -13,7 +13,7 @@
       <td>Actions</td>
     </thead>
   <% screenplays.each do |screenplay| %>
-    <tr>
+    <tr class="screenplay">
       <td>
         <%= link_to(
           "#{screenplay.id} - #{screenplay.title}",
@@ -21,7 +21,13 @@
         ) %>
       </td>
       <td>
-        <%= link_to "X", screenplay_path(screenplay), method: :delete %>
+        <%= link_to screenplay_path(screenplay),
+          title: "Delete screenplay",
+          method: :delete,
+          class: "delete-screenplay",
+          data: { confirm: "Are you sure you want to delete #{screenplay.title}?" } do %>
+          <i class="uk-icon-trash-o"></i>
+        <% end %>
       </td>
     </tr>
   <% end %>
