@@ -1,34 +1,36 @@
-<div class="uk-grid">
-  <div class="uk-grid-2-3">
-    <h1>Screenplays</h1>
-  </div>
-  <div class="uk-grid-1-3">
-    <%= button_to "New Screenplay", screenplays_path %>
-  </div>
-</div>
-<div>
-  <table>
-    <thead>
-      <td>Name</td>
-      <td>Actions</td>
-    </thead>
+<div class="uk-height-1-1">
   <% screenplays.each do |screenplay| %>
-    <tr class="screenplay">
-      <td>
-        <%= link_to(
-          "#{screenplay.id} - #{screenplay.title}",
-          screenplay_workspace_path(screenplay)
-        ) %>
-      </td>
-      <td>
-        <%= link_to screenplay_path(screenplay),
-          title: "Delete screenplay",
-          method: :delete,
-          class: "delete-screenplay",
-          data: { confirm: "Are you sure you want to delete #{screenplay.title}?" } do %>
-          <i class="uk-icon-trash-o"></i>
-        <% end %>
-      </td>
-    </tr>
+    <div class="screenplay-index-row uk-clearfix">
+      <div class="screenplay-row-action link-container uk-float-left">
+        <div class="grid-button">
+          <%= link_to screenplay_workspace_path(screenplay), class: "padded" do %>
+            <div class="screenplay-link-title">
+              <%= screenplay.title || "Untitled" %>
+            </div>
+            <div class="screenplay-link-updated-at">
+              <%= "Last updated: #{screenplay.updated_at}" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+      <div class="screenplay-row-action delete-button-container uk-float-left">
+        <div class="grid-button">
+          <%= link_to screenplay_path(screenplay),
+            class: "padded",
+            method: :delete,
+            title: "Delete screenplay",
+            data: { confirm: "Are you sure you want to delete #{screenplay.title}?" } do %>
+            <i class="uk-icon-trash-o"></i>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+<div class="grid-button new-screenplay-button-container">
+  <%= button_to screenplays_path,
+    title: "Create screenplay",
+    form_class: "new-screenplay-button" do %>
+    <i class="uk-icon-plus"></i>
   <% end %>
 </div>

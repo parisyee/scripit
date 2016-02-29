@@ -1,0 +1,54 @@
+.new-screenplay-button-container {
+  height: 4em;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+}
+
+.new-screenplay-button {
+  background: $success-color;
+  vertical-align: middle;
+
+  button {
+    font-size: 3em;
+  }
+}
+
+.screenplay-index-row {
+  width: 100%;
+  height: 5em;
+  font-size: 1.2em;
+  border-bottom: 0.2em solid $black;
+
+  div.screenplay-row-action {
+    height: 100%;
+  }
+
+  div.link-container {
+    width: 90%;
+  }
+
+  div.delete-button-container {
+    width: 10%;
+    background: $danger-color;
+    font-size: 1.5em;
+
+    a > i {
+      position: relative;
+      top: 35%;
+      left: 35%;
+    }
+  }
+}
+
+.screenplay-link-title {
+  font-size: 1.2em;
+  font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
+  font-weight: bold;
+}
+
+.screenplay-link-updated-at {
+  font-size: .8em;
+  color: lightgrey;
+  font-style: italic;
+}

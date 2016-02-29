@@ -10,7 +10,7 @@ module Capabilities
     end
 
     def add_screenplay(title)
-      click_button "New Screenplay"
+      click_button "Create screenplay"
       wait_for_screenplay_editor
       edit_screenplay_title(title)
     end
@@ -21,7 +21,7 @@ module Capabilities
     end
 
     def delete_screenplay(title)
-      within "tr.screenplay", text: title do
+      within ".screenplay-index-row", text: title do
         click_link "Delete screenplay"
       end
     end

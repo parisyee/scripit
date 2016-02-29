@@ -1,4 +1,50 @@
+body {
+  color: $black;
+  font-size: 100%;
+
+  @media only screen and (max-device-width: 768px) {
+    font-size: 2em;
+    line-height: 1.25;
+  }
+}
+
 a i {
   min-height: 1px;
   min-width: 1px;
+}
+
+.charcoal {
+  background: $charcoal;
+}
+
+.danger {
+  background: $danger-color;
+}
+
+.success {
+  background: $success-color;
+}
+
+.grid-button {
+  height: 100%;
+  width: 100%;
+
+  a,
+  button {
+    background: inherit;
+    border: none;
+    color: inherit;
+    display: block;
+    height: 100%;
+    text-decoration: none;
+    width: 100%;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+}
+
+.padded {
+  padding: 3%;
 }
