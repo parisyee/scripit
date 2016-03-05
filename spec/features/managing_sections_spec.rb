@@ -13,8 +13,8 @@ RSpec.describe "Managing sections", :js, type: :feature do
       ux.wait_for_screenplay_editor
       ux.edit_section_title("Introduction")
       ux.edit_section_notes("This is the first part of the movie")
-
       ux.has_waited_for_autosave?
+
       ux.reload_page
 
       ux.within_section do

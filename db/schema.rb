@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160127003140) do
+ActiveRecord::Schema.define(version: 20160313172541) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,13 +27,7 @@ ActiveRecord::Schema.define(version: 20160127003140) do
     t.text    "title"
     t.text    "notes"
     t.integer "position",      null: false
-  end
-
-  create_table "elements", force: :cascade do |t|
-    t.integer "section_id", null: false, foreign_key: {references: "sections", name: "fk_elements_section_id", on_update: :no_action, on_delete: :no_action}, index: {name: "fk__elements_section_id", using: :btree}
-    t.text    "type"
-    t.text    "text"
-    t.integer "position",   null: false
+    t.text    "content"
   end
 
 end

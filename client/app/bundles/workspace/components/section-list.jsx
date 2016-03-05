@@ -1,27 +1,24 @@
 import React, { PropTypes } from "react";
-import $ from "jquery";
 import _ from "lodash";
 import SectionListItem from "./section-list-item";
 
-export default class SectionList extends React.Component {
-  static propTypes = {
+export default React.createClass({
+  propTypes: {
     currentSectionIndex: PropTypes.number.isRequired,
     onSectionSelect: PropTypes.func.isRequired,
     sections: PropTypes.array.isRequired
-  };
+  },
 
-  constructor(props, context) {
-    super(props, context);
-    this.state = { sections: props.sections };
-    _.bindAll(this, "handleSectionSelect");
-  };
+  getInitialState: function() {
+    return { sections: this.props.sections };
+  },
 
 
-  handleSectionSelect(index) {
+  handleSectionSelect: function(index) {
     this.props.onSectionSelect(index);
-  };
+  },
 
-  sectionNodes() {
+  sectionNodes: function() {
     const handleSectionSelect = this.handleSectionSelect;
     const currentSectionIndex = this.props.currentSectionIndex;
     let selected;
@@ -40,14 +37,14 @@ export default class SectionList extends React.Component {
     });
 
     return nodes;
-  };
+  },
 
-  render() {
+  render: function() {
     return(
       <div className="section-list">
         {this.sectionNodes()}
       </div>
     );
-  };
-};
+  }
+})
 

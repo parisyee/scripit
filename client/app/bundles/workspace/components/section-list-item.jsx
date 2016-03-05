@@ -1,50 +1,40 @@
 import React, { PropTypes } from "react";
-import $ from "jquery";
-import _ from "lodash";
+import classNames from "classnames";
 
-export default class SectionListItem extends React.Component {
-  static propTypes = {
+export default React.createClass({
+  propTypes: {
     active: PropTypes.bool.isRequired,
     index: PropTypes.number.isRequired,
     onSectionSelect: PropTypes.func.isRequired,
     section: PropTypes.object.isRequired
-  };
+  },
 
-  constructor(props, context) {
-    super(props, context);
-
-    _.bindAll(this, "handleSectionSelect");
-  };
-
-  handleSectionSelect() {
+  handleSectionSelect: function() {
     this.props.onSectionSelect(this.props.index);
-  };
+  },
 
-  listItemClasses() {
-    const names = ["section-list-item"]; 
+  listItemClasses: function() {
+    return classNames(
+      "section-list-item",
+      { active: this.props.active }
+    );
+  },
 
-    if (this.props.active) {
-      names.push("active");
-    }
-
-    return names.join(" ");
-  };
-
-  sectionTitle() {
+  sectionTitle: function() {
     return (
       this.props.section.title || `Section ${this.props.index + 1}`
     );
-  };
+  },
 
-  render() {
+  render: function() {
     return(
       <a
-        href="javascript:void()"
         className={this.listItemClasses()}
-        onClick={this.handleSectionSelect}>
+        onClick={this.handleSectionSelect}
+      >
         {this.sectionTitle()}
       </a>
     );
-  };
-};
+  }
+})
 

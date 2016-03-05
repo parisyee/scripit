@@ -36,6 +36,8 @@ module Capabilities
     def reload_page
       visit page.current_path
       wait_for_screenplay_editor
+      sleep 1
+      wait_for_ajax
     end
 
     def wait_for_screenplay_editor

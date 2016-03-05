@@ -11,11 +11,11 @@ FactoryGirl.define do
     screenplay
   end
 
-  factory :element do
-    section
-  end
+  # factory :element do
+  #   section
+  # end
 
-  factory :heading_element, parent: :element do
-    type "Elements::Heading"
-  end
+  # factory :heading_element, parent: :element do
+  #   type "Elements::Heading"
+  # end
 end

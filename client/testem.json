@@ -2,6 +2,7 @@
   "before_tests": "npm run build:test",
   "framework": "mocha+chai",
   "launch_in_dev": ["Chrome"],
+  "test_page": "tests/index.html",
   "on_exit": "rm ./tests/tmp/*",
   "routes": {
     "/tests/index.html": "tests/index.html.mustache"

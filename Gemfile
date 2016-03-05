@@ -40,6 +40,7 @@ group :test do
   gem "factory_girl_rails", "~> 4.0"
   gem "launchy"
   gem "rspec_junit_formatter", "0.2.2"
+  gem "selenium-webdriver"
 end
 
 source "https://rails-assets.org" do

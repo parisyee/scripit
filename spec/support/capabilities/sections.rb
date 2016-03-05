@@ -7,7 +7,7 @@ module Capabilities
 
     def navigate_to_section(title)
       within_sidebar do
-        click_link(title)
+        find(".section-list-item", text: title).click
         wait_for_ajax
       end
     end

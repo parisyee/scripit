@@ -4,35 +4,38 @@ module Api
       respond_to :json
 
       def show
-        section = screenplay.sections.find(params[:id]).extend(SectionRepresenter)
+        section = find_section.extend(Api::V1::SectionRepresenter)
 
-        respond_with section, location: nil
+        respond_with section
       end
 
       def create
-        section = screenplay.sections.create!.extend(SectionRepresenter)
+        section = screenplay.sections.create!.extend(Api::V1::SectionRepresenter)
 
         respond_with section, location: nil
       end
 
       def update
-        section = screenplay.sections.find(params[:id])
+        section = find_section
         section.update!(section_params)
 
-        respond_with section, location: nil
+        respond_with section
       end
 
       def destroy
-        section = screenplay.sections.find(params[:id])
-        section.destroy!
+        section = find_section.destroy!
 
-        respond_with section, location: nil
+        respond_with section
       end
 
       private
 
       def section_params
-        params.require(:section).permit(:notes, :position, :title)
+        params.require(:section).permit(:notes, :position, :title, :content)
+      end
+
+      def find_section
+        Section.find(params[:id])
       end
 
       def screenplay

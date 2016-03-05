@@ -4,48 +4,33 @@ import _ from "lodash";
 import SectionEditor from "./section-editor";
 import SectionList from "./section-list";
 
-export default class ScreenplayEditor extends React.Component {
-  static propTypes = {
+export default React.createClass({
+  propTypes: {
     title: PropTypes.string.isRequired,
     sections: PropTypes.array.isRequired,
     url: PropTypes.string.isRequired,
     sectionsUrl: PropTypes.string.isRequired
-  };
+  },
 
-  constructor(props, context) {
-    super(props, context);
-
-    this.AUTOSAVE_TIMER = null;
-    this.state = {
+  getInitialState: function() {
+    return {
       title: this.props.title,
       sections: this.props.sections,
       sectionsUrl: this.props.sectionsUrl,
       url: this.props.url,
       currentSectionIndex: 0
     };
+  },
 
-    _.bindAll(
-      this,
-      [
-        "createSection",
-        "handleChange",
-        "onSectionPositionChange",
-        "onSectionSelect",
-        "onSectionTitleChange",
-        "removeSection"
-      ]
-    );
-  };
-
-  buildScreenplay() {
+  buildScreenplay: function() {
     return { title: this.state.title };
-  };
+  },
 
-  handleChange() {
+  handleChange: function() {
     this.setState({ title: this.refs.title.value }, this.queueAutosave);
-  };
+  },
 
-  queueAutosave() {
+  queueAutosave: function() {
     if (this.AUTOSAVE_TIMER) {
       clearTimeout(this.AUTOSAVE_TIMER);
     }
@@ -56,9 +41,9 @@ export default class ScreenplayEditor extends React.Component {
       this.saveScreenplay();
       this.AUTOSAVE_TIMER = null;
     }.bind(this), 1750);
-  };
+  },
 
-  saveScreenplay() {
+  saveScreenplay: function() {
     $.ajax({
       url: this.props.url,
       method: "PUT",
@@ -72,9 +57,9 @@ export default class ScreenplayEditor extends React.Component {
         $("#autosave-indicator").removeClass("saving").addClass("error");
       }
     });
-  };
+  },
 
-  createSection() {
+  createSection: function() {
     $.ajax({
       url: this.props.sectionsUrl,
       method: "POST",
@@ -96,9 +81,9 @@ export default class ScreenplayEditor extends React.Component {
         console.log(error);
       })
     });
-  };
+  },
 
-  removeSection() {
+  removeSection: function() {
     this.setState((oldState) => {
       let index = oldState.currentSectionIndex;
       const sections = oldState.sections;
@@ -108,13 +93,13 @@ export default class ScreenplayEditor extends React.Component {
       }
       return { sections: sections, currentSectionIndex: index };
     });
-  };
+  },
 
-  onSectionSelect(index) {
+  onSectionSelect: function(index) {
     this.setState({ currentSectionIndex: index });
-  };
+  },
 
-  onSectionPositionChange(newPosition) {
+  onSectionPositionChange: function(newPosition) {
     const newIndex = newPosition - 1;
     this.setState((oldState) => {
       const sections = oldState.sections;
@@ -123,24 +108,23 @@ export default class ScreenplayEditor extends React.Component {
 
       return { sections: sections, currentSectionIndex: newIndex };
     });
+  },
 
-  };
-
-  onSectionTitleChange(title) {
+  onSectionTitleChange: function(title) {
     this.setState((oldState) => {
       const sections = oldState.sections;
       sections[this.state.currentSectionIndex].title = title;
       return { sections: sections };
     });
-  };
+  },
 
-  currentSectionUrl() {
+  currentSectionUrl: function() {
     return (
       this.state.sections[this.state.currentSectionIndex].url
     );
-  };
+  },
 
-  sectionEditorNode() {
+  sectionEditorNode: function() {
     if (this.state.sections.length > 0) {
       return (
         <SectionEditor
@@ -154,12 +138,12 @@ export default class ScreenplayEditor extends React.Component {
     } else {
       return "Add a section";
     }
-  };
+  },
 
-  render() {
+  render: function() {
     return (
       <div className="screenplay-editor uk-grid uk-grid-collapse uk-height-1-1">
-        <div className="sidebar uk-height-1-1">
+        <div className="sidebar uk-height-1-1 uk-width-1-5">
           <div className="screenplay-title">
             <input
               className=""
@@ -192,8 +176,10 @@ export default class ScreenplayEditor extends React.Component {
             </a>
           </div>
         </div>
-        {this.sectionEditorNode()}
+        <div className="uk-width-4-5">
+          {this.sectionEditorNode()}
+        </div>
       </div>
     );
-  };
-}
+  }
+})
