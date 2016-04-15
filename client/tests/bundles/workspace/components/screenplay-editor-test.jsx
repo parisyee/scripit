@@ -57,7 +57,7 @@ describe("ScreenplayEditor", () => {
       expect(component.state.currentSectionIndex).to.eql(0)
 
       const componentElm = ReactDOM.findDOMNode(component);
-      const sectionListItemElm = componentElm.querySelectorAll("a.section-list-item")[1];
+      const sectionListItemElm = componentElm.querySelectorAll(".section-list-item")[1];
       ReactTestUtils.Simulate.click(sectionListItemElm);
 
       expect(component.state.currentSectionIndex).to.eql(1)
@@ -101,45 +101,5 @@ describe("ScreenplayEditor", () => {
       ]);
     });
   });
-
-  describe("when title changes", () => {
-    it("queues the autosave timer and sends a PUT to the provided url", (done) => {
-      const component = ReactTestUtils.renderIntoDocument(
-        <ScreenplayEditor
-          sections={[{ url: "/screenplays/1/sections/1" }]}
-          title={"My Screenplay"}
-          url={"/screenplays/1"}
-          sectionsUrl={"/screenplays/1/sections"} />
-      );
-      const componentElm = ReactDOM.findDOMNode(component);
-      const input = component.refs.title;
-
-      expect(ReactDOM.findDOMNode(input).value).to.contain("My Screenplay")
-
-      input.value = "New Screenplay";
-      ReactTestUtils.Simulate.change(input);
-
-      expect(
-        document.getElementById("autosave-indicator").className
-      ).to.contain("saving");
-      expect(
-        document.getElementById("autosave-indicator").className
-      ).to.not.contain("saved");
-
-      window.setTimeout(() => {
-        expect(server.requests[1].method).to.eql("PUT");
-        expect(server.requests[1].url).to.eql("/screenplays/1");
-
-        server.requests[1].respond(200, { "Content-Type": "application/json" }, "{}");
-
-        expect(
-          document.getElementById("autosave-indicator").className
-        ).to.contain("saved");
-        expect(
-          document.getElementById("autosave-indicator").className
-        ).to.not.contain("saving");
-        done();
-      }, 1750);
-    });
-  });
+  //TODO test title saving
 });

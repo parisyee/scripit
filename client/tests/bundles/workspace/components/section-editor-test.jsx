@@ -48,18 +48,16 @@ describe("SectionEditor", () => {
     });
   });
 
-  describe("handleChange", () => {
+  describe("handleNotesChange", () => {
     it("updates state.note and state.title and calls queueAutosave", () => {
       const component = ReactTestUtils.renderIntoDocument(
         <SectionEditor url={"/screenplays/1/sections/1"} />
       );
       const queueAutosave = sinon.spy(component, "queueAutosave");
-      component.refs.title.value = "The Title";
       component.refs.notes.value = "The Notes";
 
-      component.handleChange();
+      component.handleNotesChange();
 
-      expect(component.state.title).to.eql("The Title");
       expect(component.state.notes).to.eql("The Notes");
       expect(queueAutosave).to.be.called;
     });
@@ -75,9 +73,8 @@ describe("SectionEditor", () => {
           url={"/screenplays/1/sections/1"} />
       );
       const saveSection = sinon.spy(component, "saveSection");
-      component.refs.position.value = "9";
 
-      component.handlePositionChange();
+      component.handlePositionChange(9);
 
       expect(component.state.position).to.eql(9)
       expect(onPositionChange).to.be.calledWith(9);
@@ -86,20 +83,20 @@ describe("SectionEditor", () => {
   });
 
   describe("handleTitleChange", () => {
-    it("calls the onTitleChange callback with the new title and calls handleChange", () => {
+    it("calls the onTitleChange callback with the new title and calls queueAutosave", () => {
       const onTitleChange = sinon.spy();
       const component = ReactTestUtils.renderIntoDocument(
         <SectionEditor
           onTitleChange={onTitleChange}
           url={"/screenplays/1/sections/1"} />
       );
-      const handleChange = sinon.spy(component, "handleChange");
-      component.refs.title.value = "New Title";
+      const queueAutosave = sinon.spy(component, "queueAutosave");
 
-      component.handleTitleChange();
+      component.handleTitleChange("New Title");
 
+      expect(component.state.title).to.eql("New Title")
       expect(onTitleChange).to.be.calledWith("New Title");
-      expect(handleChange).to.be.called;
+      expect(queueAutosave).to.be.called;
     });
   });
 

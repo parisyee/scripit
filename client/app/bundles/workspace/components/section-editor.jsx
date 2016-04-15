@@ -1,7 +1,9 @@
 import React, { PropTypes } from "react";
 import $ from "jquery";
-import _ from "lodash";
+import classNames from "classnames";
 import ScreenplayElementList from "./screenplay-element-list";
+import SectionHeader from "./section-header";
+import SectionFooter from "./section-footer";
 
 export default React.createClass({
   propTypes: {
@@ -15,6 +17,7 @@ export default React.createClass({
   getInitialState: function() {
     return {
       elementListUrl: null,
+      isDisplaying: "split",
       notes: "",
       position: null,
       title: ""
@@ -93,117 +96,139 @@ export default React.createClass({
     if (this.AUTOSAVE_TIMER) {
       clearTimeout(this.AUTOSAVE_TIMER);
     }
-
     $("#autosave-indicator").removeClass("saved").addClass("saving");
-
     this.AUTOSAVE_TIMER = setTimeout(function() {
       this.saveSection();
       this.AUTOSAVE_TIMER = null;
     }.bind(this), 1750);
   },
 
-  handleChange: function() {
-    const title = this.refs.title.value;
+  handleNotesChange: function() {
     const notes = this.refs.notes.value;
     this.setState({
       notes: notes,
-      title: title
     }, this.queueAutosave);
   },
 
-  handlePositionChange: function() {
-    const position = parseInt(this.refs.position.value);
+  handlePositionChange: function(newPosition) {
+    const position = parseInt(newPosition);
     this.props.onPositionChange(position);
     this.setState({
       position: position
     }, this.saveSection);
   },
 
-  handleTitleChange: function() {
-    this.props.onTitleChange(this.refs.title.value);
-    this.handleChange();
+  handleTitleChange: function(newTitle) {
+    this.props.onTitleChange(newTitle);
+    this.setState({
+      title: newTitle
+    }, this.queueAutosave);
   },
 
-  renderPositionSelect: function() {
-    const optionNodes = [...Array(this.props.totalSections).keys()].map((i) => {
-      const index = i + 1;
-      return (<option key={i} value={index}>{index}</option>);
-    });
-
+  renderSectionHeader: function() {
     return (
-      <span className="uk-form">
-        <select
-          className="section-position"
-          name="section[position]"
-          ref="position"
-          value={this.state.position}
-          onChange={this.handlePositionChange}>
-          {optionNodes}
-        </select>
-      </span>
+      <SectionHeader
+        onDelete={this.deleteSection}
+        onPositionChange={this.handlePositionChange}
+        onTitleChange={this.handleTitleChange}
+        position={this.state.position}
+        title={this.state.title}
+        totalSections={this.props.totalSections}
+      />
     );
   },
 
-  renderTitleInput: function() {
-    return (
-      <input
-        className="uk-margin-left"
-        name="section[title]"
-        ref="title"
-        placeholder="Untitled"
-        onInput={this.handleTitleChange}
-        value={this.state.title} />
-    );
-  },
-
-  renderDeleteButton: function() {
-    return (
-      <a
-        title="Delete section"
-        className="delete-section uk-float-right uk-margin-right"
-        href="javascript:void()"
-        onClick={this.deleteSection}>
-        <i className="uk-icon-trash"></i>
-      </a>
+  screenplayElementListClasses: function() {
+    return classNames(
+      "screenplay-element-list-container",
+      "uk-height-1-1",
+      "uk-flex",
+      "uk-flex-center",
+      {
+        "uk-hidden": (this.state.isDisplaying === "notes"),
+        "uk-width-1-1": (this.state.isDisplaying === "elementList"),
+        "uk-width-1-2": (this.state.isDisplaying === "split")
+      }
     );
   },
 
   renderScreenplayElementList: function() {
     if (this.state.elementListUrl) {
       return (
-        <ScreenplayElementList url={this.state.elementListUrl} />
+        <div className={this.screenplayElementListClasses()}>
+          <ScreenplayElementList url={this.state.elementListUrl} />
+        </div>
       );
     }
   },
 
+  notesTextareaClasses: function() {
+    return classNames(
+      "notes-textarea-container",
+      "uk-height-1-1",
+      "uk-flex",
+      "uk-flex-center",
+      {
+        "uk-hidden": (this.state.isDisplaying === "elementList"),
+        "uk-width-1-1": (this.state.isDisplaying === "notes"),
+        "uk-width-1-2": (this.state.isDisplaying === "split")
+      }
+    );
+  },
+
   renderNotesTextarea: function() {
     return (
-      <textarea
-        placeholder="notes..."
-        className="section-notes uk-margin-left"
-        name="section[notes]"
-        ref="notes"
-        onInput={this.handleChange}
-        value={this.state.notes}></textarea>
+      <div className={this.notesTextareaClasses()}>
+        <textarea
+          placeholder="notes..."
+          className="section-notes uk-margin-right"
+          name="section[notes]"
+          ref="notes"
+          onInput={this.handleNotesChange}
+          value={this.state.notes}
+        ></textarea>
+      </div>
+    );
+  },
+
+  renderSectionBody: function() {
+    return (
+      <div className="section-body uk-grid uk-grid-collapse">
+        {this.renderScreenplayElementList()}
+        {this.renderNotesTextarea()}
+      </div>
+    );
+  },
+
+  displayElementListOnly: function() {
+    this.setState({ isDisplaying: "elementList" });
+  },
+
+  displayNotesOnly: function() {
+    this.setState({ isDisplaying: "notes" });
+  },
+
+  displaySplit: function() {
+    this.setState({ isDisplaying: "split" });
+  },
+
+  renderSectionFooter: function() {
+    return (
+      <SectionFooter
+        onLeftArrowClick={this.displayNotesOnly}
+        onRightArrowClick={this.displayElementListOnly}
+        onVerticalRuleClick={this.displaySplit}
+      />
     );
   },
 
   render: function() {
     return(
-      <div className="section-editor uk-grid uk-grid-collapse uk-height-1-1">
-        <div className="section-title-bar uk-width-1-1">
-          {this.renderTitleInput()}
-          {this.renderPositionSelect()}
-          {this.renderDeleteButton()}
-        </div>
-        <div className="uk-width-1-2">
-          {this.renderScreenplayElementList()}
-        </div>
-        <div className="uk-width-1-2">
-          {this.renderNotesTextarea()}
-        </div>
+      <div className="section-editor uk-height-1-1">
+        {this.renderSectionHeader()}
+        {this.renderSectionBody()}
+        {this.renderSectionFooter()}
       </div>
     );
   }
 });
-

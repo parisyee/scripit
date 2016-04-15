@@ -48,7 +48,7 @@ export default React.createClass({
     return classNames(
       "screenplay-element",
       this.state.type,
-      "uk-margin-small-bottom"
+      {"uk-text-right": (this.state.type == "transition")}
     );
   },
 
@@ -202,10 +202,8 @@ export default React.createClass({
         <div
           className="element-input"
           contentEditable="true"
-          name="screenplay_element[text]"
           onInput={this.handleInput}
           ref="displayInput"
-          style={ {minHeight: 20, border: "1px solid black"} }
         ></div>
         <textarea
           className="uk-hidden"

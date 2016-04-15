@@ -6,13 +6,12 @@ require "support/capabilities/sections"
 
 RSpec.describe "Managing screenplay elements", :selenium, type: :feature do
   scenario do
-    create(:screenplay, title: "Aristocats")
+    create(:screenplay, :with_section, title: "Aristocats")
     ux.visit_screenplays
 
     behavior "adding screenplay elements" do
       ux.click_link "Aristocats"
       ux.wait_for_screenplay_editor
-      ux.add_new_section
       content = "INT. PHYSICAL THERAPY OFFICE - DAY\n" +
         "NADINE GITA lies on the table reading emails on her phone.\n" +
         "\tTHERAPIST\n" +

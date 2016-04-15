@@ -174,7 +174,10 @@ export default React.createClass({
 
   render: function() {
     return(
-      <div className="screenplay-element-list">
+      <div
+        className="screenplay-element-list uk-height-1-1"
+        style={{ cursor: "text" }}
+      >
         {this.renderElements()}
       </div>
     );

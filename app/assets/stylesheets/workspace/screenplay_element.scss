@@ -1,0 +1,43 @@
+.screenplay-element {
+  font-family: 'Courier New', Courier, 'Lucida Sans Typewriter', 'Lucida Typewriter', monospace;
+  font-weight: 600;
+  font-size: 12pt;
+
+  .element-input {
+    border: none;
+    outline: none;
+    min-height: 20px;
+  }
+}
+
+.screenplay-element.heading {
+  text-transform: uppercase;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.screenplay-element.action {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.screenplay-element.character {
+  text-transform: uppercase;
+  margin-left: 41.67%;
+}
+
+.screenplay-element.dialogue {
+  margin-left: 25%;
+  width: 58.33%;
+  margin-bottom: 20px;
+}
+
+.screenplay-element.parenthetical {
+  margin-left: 33.33%;
+  background: lightgrey;
+}
+
+.screenplay-element.transition {
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}

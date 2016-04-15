@@ -9,15 +9,9 @@ module Capabilities
       click_link title
     end
 
-    def add_screenplay(title)
+    def add_screenplay
       click_button "Create screenplay"
       wait_for_screenplay_editor
-      edit_screenplay_title(title)
-    end
-
-    def edit_screenplay_title(title)
-      fill_in "screenplay[title]", with: title
-      has_waited_for_autosave?
     end
 
     def delete_screenplay(title)

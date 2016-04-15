@@ -8,8 +8,8 @@ config.node = {
 };
 
 config.resolve.root.push(
-  path.resolve("./tests"),
-  path.resolve("./app")
+  path.resolve("./app"),
+  path.resolve("./tests")
 );
 
 config.output = {

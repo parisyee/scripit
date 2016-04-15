@@ -1,0 +1,69 @@
+.section-header {
+  background: inherit;
+  box-shadow: 0 2px 2px lightgrey;
+  height: 42px;
+  position: absolute;
+  top: 0;
+  width: 100%;
+}
+
+.section-title-input {
+  border: none;
+  height: 100%;
+  outline: none;
+  width: 550px;
+
+  @media (max-width: 670px) {
+    width: 200px;
+  }
+}
+
+.delete-section > i {
+  color: $danger-color;
+}
+
+.section-body {
+  bottom: 42px;
+  box-shadow: 0 2px 2px lightgrey;
+  position: absolute;
+  top: 44px;
+  width: 100%;
+
+  textarea {
+    border: none;
+    box-sizing: border-box;
+    display: block;
+    font-size: inherit;
+    height: 100%;
+    top: 0;
+    margin-bottom: -2px;
+    max-width: 900px;
+    outline: none;
+    padding: 15px;
+    resize: none;
+    width: 100%;
+  }
+}
+
+.section-footer {
+  background: inherit;
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+
+  div {
+    position: relative;
+  }
+}
+
+#autosave-indicator.saved {
+  color: $success-color;
+}
+
+#autosave-indicator.saving {
+  color: $warning-color;
+}
+
+#autosave-indicator.error {
+  color: $danger-color;
+}

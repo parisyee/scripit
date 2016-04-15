@@ -1,0 +1,57 @@
+.modal-content-container {
+  background: $white;
+  border-radius: 5px;
+  height: 80%;
+  left: 10%;
+  position: fixed;
+  top: 10%;
+  width: 80%;
+}
+
+.screenplay-title-input-container {
+  height: 8%;
+  left: 5%;
+  position: relative;
+  top: 2%;
+  width: 90%;
+
+  input {
+    border-radius: 3px;
+    width: 100%;
+  }
+}
+
+.section-list-container {
+  border-radius: 3px;
+  border: 1px solid lightgrey;
+  height: 78%;
+  left: 5%;
+  overflow: scroll;
+  position: relative;
+  top: 2%;
+  width: 90%;
+}
+
+.create-section-button-container {
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  left: 5%;
+  position: relative;
+  top: 2%;
+  width: 90%;
+
+  a {
+    border-radius: inherit;
+  }
+}
+
+.section-list-item {
+  border-bottom: 1px solid lightgrey;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 10px;
+
+  &.active {
+    background: $active-orange;
+  }
+}

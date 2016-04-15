@@ -28,10 +28,6 @@ RSpec.describe "Managing sections", :js, type: :feature do
       ux.edit_section_title("Climax")
       ux.has_waited_for_autosave?
 
-      ux.within_sidebar do
-        expect(ux).to have_section_order ["Introduction", "Climax"]
-      end
-
       ux.edit_section_notes("Shit goes down")
       ux.has_waited_for_autosave?
       ux.reload_page
@@ -41,14 +37,20 @@ RSpec.describe "Managing sections", :js, type: :feature do
         expect(ux).to have_field "section[title]", with: "Climax"
         expect(ux).to have_field "section[notes]", with: "Shit goes down"
       end
+
+      ux.open_section_list_modal
+
+      ux.within_section_list_modal do
+        expect(ux).to have_section_order ["Introduction", "Climax"]
+      end
     end
 
     behavior "reordering sections" do
       ux.change_section_position("1")
-      ux.has_waited_for_autosave?
-
       expect(ux).to have_section_order ["Climax", "Introduction"]
+
       ux.reload_page
+      ux.open_section_list_modal
       expect(ux).to have_section_order ["Climax", "Introduction"]
     end
 
@@ -62,11 +64,11 @@ RSpec.describe "Managing sections", :js, type: :feature do
     #     expect(ux).to have_field "section[title]", with: "Introduction"
     #     expect(ux).to have_field "section[notes]", with: "This is the first part of the movie"
     #   end
-    #   ux.within_sidebar do
+    #   ux.within_section_list_modal do
     #     expect(ux).not_to have_link "Climax"
     #   end
     #   ux.reload_page
-    #   ux.within_sidebar do
+    #   ux.within_section_list_modal do
     #     expect(ux).not_to have_link "Climax"
     #   end
     # end

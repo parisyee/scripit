@@ -28,7 +28,7 @@ module Support
       def actual_section_order
         @actual_section_order ||=
           begin
-            @page.find(".section-list").find_all(".section-list-item").map(&:text)
+            @page.find(".section-list").find_all(".section-list-item-title").map(&:text)
           end
       end
     end

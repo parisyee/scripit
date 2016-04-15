@@ -16,10 +16,16 @@ module.exports = {
       "react",
       "react-dom"
     ],
+    uikit: [
+      "./app/bundles/uikit/startup/uikit-globals"
+    ]
   },
   resolve: {
-    extensions: ["", ".js", ".jsx"],
-    root: [path.resolve("./vendor")]
+    extensions: ["", ".js", ".jsx", ".css", ".scss"],
+    root: [
+      path.resolve(__dirname, "bower_components"),
+      path.resolve("./vendor")
+    ]
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -36,6 +42,17 @@ module.exports = {
       // In other words, we only put what's in the vendor entry definition in vendor-bundle.js
       minChunks: Infinity,
     }),
+
+    new webpack.ResolverPlugin(
+      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin(
+        "bower.json",
+        ["main"]
+      )
+    ),
+
+    new webpack.ResolverPlugin(
+      new webpack.ResolverPlugin.DirectoryDescriptionFilePlugin(".bower.json", ["main"])
+    )
   ],
   module: {
     loaders: [

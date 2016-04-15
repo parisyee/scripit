@@ -75,7 +75,7 @@ export default React.createClass({
             sections: sections,
             currentSectionIndex: index
           };
-        });
+        }, this.closeModal);
       }).bind(this),
       error: ((xhr, status, error) => {
         console.log(error);
@@ -96,7 +96,13 @@ export default React.createClass({
   },
 
   onSectionSelect: function(index) {
-    this.setState({ currentSectionIndex: index });
+    this.setState({
+      currentSectionIndex: index
+    }, this.closeModal);
+  },
+
+  closeModal: function() {
+    UIkit.modal("#section-list-modal").hide();
   },
 
   onSectionPositionChange: function(newPosition) {
@@ -124,61 +130,59 @@ export default React.createClass({
     );
   },
 
-  sectionEditorNode: function() {
-    if (this.state.sections.length > 0) {
-      return (
+  renderSectionEditor: function() {
+    return (
+      <div className="uk-width-1-1 uk-height-1-1">
         <SectionEditor
           key={this.currentSectionUrl()}
           onDelete={this.removeSection}
           onPositionChange={this.onSectionPositionChange}
           onTitleChange={this.onSectionTitleChange}
           totalSections={this.state.sections.length}
-          url={this.currentSectionUrl()} />
-      );
-    } else {
-      return "Add a section";
-    }
+          url={this.currentSectionUrl()}
+        />
+      </div>
+    );
+  },
+
+  renderSectionList: function() {
+    return (
+      <div className="uk-modal" id="section-list-modal">
+        <div className="modal-content-container">
+          <div className="screenplay-title-input-container uk-form">
+            <input
+              name="screenplay[title]"
+              onInput={this.handleChange}
+              ref="title"
+              value={this.state.title}
+            />
+          </div>
+          <div className="section-list-container">
+            <SectionList
+              currentSectionIndex={this.state.currentSectionIndex}
+              onSectionSelect={this.onSectionSelect}
+              sections={this.state.sections}
+            />
+          </div>
+          <div className="create-section-button-container uk-margin-top">
+            <a
+              title="Create new section"
+              className="create-section uk-button uk-width-1-1"
+              onClick={this.createSection}
+            >
+              <i className="uk-icon-plus"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    )
   },
 
   render: function() {
     return (
       <div className="screenplay-editor uk-grid uk-grid-collapse uk-height-1-1">
-        <div className="sidebar uk-height-1-1 uk-width-1-5">
-          <div className="screenplay-title">
-            <input
-              className=""
-              placeholder="Untitled"
-              value={this.state.title}
-              name="screenplay[title]"
-              onChange={this.handleChange}
-              ref="title" />
-          </div>
-          <SectionList
-            currentSectionIndex={this.state.currentSectionIndex}
-            onSectionSelect={this.onSectionSelect}
-            sections={this.state.sections} />
-          <div className="control-panel uk-grid uk-grid-collapse">
-            <a
-              title="Back to screenplays"
-              className="uk-width-1-4 uk-text-center"
-              href="/screenplays">
-              <i className="uk-icon-arrow-left"></i>
-            </a>
-            <span className="uk-width-2-4 uk-text-center">
-              <i className="uk-icon-save saved" id="autosave-indicator"></i>
-            </span>
-            <a
-              title="Create new section"
-              className="create-section uk-width-1-4 uk-text-center"
-              href="javascript:void()"
-              onClick={this.createSection}>
-              <i className="uk-icon-plus"></i>
-            </a>
-          </div>
-        </div>
-        <div className="uk-width-4-5">
-          {this.sectionEditorNode()}
-        </div>
+        {this.renderSectionList()}
+        {this.renderSectionEditor()}
       </div>
     );
   }

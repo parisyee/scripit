@@ -13,6 +13,7 @@
   ],
   "serve_files": [
     "./tests/tmp/vendor-bundle.js",
+    "./tests/tmp/uikit-bundle.js",
     "./tests/tmp/tests-bundle.js"
   ],
   "test_page": "./tests/index.html"

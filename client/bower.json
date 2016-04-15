@@ -1,0 +1,22 @@
+{
+  "name": "script-it-client",
+  "description": "The Story Building Platform",
+  "main": "server.js",
+  "authors": [
+    "paris.yee@gmail.com"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "react"
+  ],
+  "homepage": "https://github.com/parisyee/script-it",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
