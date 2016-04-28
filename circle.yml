@@ -5,6 +5,8 @@ machine:
     version: 2.3.1
   timezone:
     America/New_York
+  post:
+    - sudo wget -O- https://toolbelt.heroku.com/install-ubuntu.sh | sh
 test:
   override:
     - RAILS_ENV=test bundle exec rspec -r rspec_junit_formatter --format RspecJunitFormatter -o $CIRCLE_TEST_REPORTS/rspec/junit.xml
