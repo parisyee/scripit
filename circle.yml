@@ -2,7 +2,7 @@ machine:
   node:
     version: 5.5.0
   ruby:
-    version: 2.3.0
+    version: 2.3.1
   timezone:
     America/New_York
 test:
