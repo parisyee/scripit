@@ -12,6 +12,7 @@ RSpec.describe "Managing sections", :js, type: :feature do
       ux.click_link "Aristocats"
       ux.wait_for_screenplay_editor
       ux.edit_section_title("Introduction")
+      ux.show_split_section
       ux.edit_section_notes("This is the first part of the movie")
       ux.has_waited_for_autosave?
 
@@ -19,6 +20,7 @@ RSpec.describe "Managing sections", :js, type: :feature do
 
       ux.within_section do
         expect(ux).to have_field "section[title]", with: "Introduction"
+        ux.show_split_section
         expect(ux).to have_field "section[notes]", with: "This is the first part of the movie"
       end
     end
@@ -28,6 +30,7 @@ RSpec.describe "Managing sections", :js, type: :feature do
       ux.edit_section_title("Climax")
       ux.has_waited_for_autosave?
 
+      ux.show_split_section
       ux.edit_section_notes("Shit goes down")
       ux.has_waited_for_autosave?
       ux.reload_page
@@ -35,6 +38,7 @@ RSpec.describe "Managing sections", :js, type: :feature do
 
       ux.within_section do
         expect(ux).to have_field "section[title]", with: "Climax"
+        ux.show_split_section
         expect(ux).to have_field "section[notes]", with: "Shit goes down"
       end
 

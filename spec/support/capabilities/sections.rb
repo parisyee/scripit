@@ -41,6 +41,10 @@ module Capabilities
       end
     end
 
+    def show_split_section
+      find("#split-section-body-button").click
+    end
+
     def delete_section
       click_link "Delete section"
       page.driver.browser.accept_js_confirms

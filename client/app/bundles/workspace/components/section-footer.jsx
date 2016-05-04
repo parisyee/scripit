@@ -18,6 +18,7 @@ export default React.createClass({
         </a>
         <a
           className="uk-button"
+          id="split-section-body-button"
           onClick={this.props.onVerticalRuleClick}
         >
           |

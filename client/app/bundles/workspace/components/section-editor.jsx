@@ -17,7 +17,7 @@ export default React.createClass({
   getInitialState: function() {
     return {
       elementListUrl: null,
-      isDisplaying: "split",
+      isDisplaying: "elementList",
       notes: "",
       position: null,
       title: ""
