@@ -1,4 +1,3 @@
-# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -18,15 +17,15 @@ ActiveRecord::Schema.define(version: 20160313172541) do
 
   create_table "screenplays", force: :cascade do |t|
     t.string   "title"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", :null=>false
+    t.datetime "updated_at", :null=>false
   end
 
   create_table "sections", force: :cascade do |t|
-    t.integer "screenplay_id", null: false, foreign_key: {references: "screenplays", name: "fk_sections_screenplay_id", on_update: :no_action, on_delete: :no_action}, index: {name: "fk__sections_screenplay_id", using: :btree}
+    t.integer "screenplay_id", :null=>false, :foreign_key=>{:references=>"screenplays", :name=>"fk_sections_screenplay_id", :on_update=>:no_action, :on_delete=>:no_action}
     t.text    "title"
     t.text    "notes"
-    t.integer "position",      null: false
+    t.integer "position",      :null=>false
     t.text    "content"
   end
 

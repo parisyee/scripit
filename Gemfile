@@ -1,8 +1,8 @@
 source "https://rubygems.org"
 
-ruby "2.3.1"
+ruby "2.3.3"
 
-gem "rails", "4.2.4"
+gem "rails", "5.0.1"
 
 gem "acts_as_list"
 gem "envied"
